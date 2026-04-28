@@ -8,14 +8,12 @@ export default function SearchControl() {
 
   useEffect(() => {
     const provider = new OpenStreetMapProvider();
+
     const searchControl = new GeoSearchControl({
       provider,
-      style: 'bar', // or 'button' for a smaller icon
+      style: 'bar',
       showMarker: true,
-      showPopup: false,
       autoClose: true,
-      retainZoomLevel: false,
-      animateZoom: true,
       keepResult: true,
     });
 

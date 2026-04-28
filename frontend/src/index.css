@@ -17,15 +17,14 @@
   --pixel-border: 4px solid var(--pixel-cyan);
 }
 
+/* ── Global Resets ── */
 * {
   box-sizing: border-box;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -35,36 +34,18 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Pixel border utility ─────────────────────────────────────── */
-.pixel-border {
-  border: 4px solid var(--pixel-cyan);
-  box-shadow:
-    4px 4px 0 0 var(--pixel-cyan),
-    inset -4px -4px 0 0 rgba(0,255,245,0.1);
+/* ── CRT & Scanline Effects ── */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+  z-index: 9998;
 }
 
-.pixel-border-yellow {
-  border: 4px solid var(--pixel-yellow);
-  box-shadow:
-    4px 4px 0 0 var(--pixel-yellow),
-    inset -4px -4px 0 0 rgba(255,230,0,0.1);
-}
-
-.pixel-border-green {
-  border: 4px solid var(--pixel-green);
-  box-shadow:
-    4px 4px 0 0 var(--pixel-green),
-    inset -4px -4px 0 0 rgba(57,255,20,0.1);
-}
-
-.pixel-border-pink {
-  border: 4px solid var(--pixel-pink);
-  box-shadow:
-    4px 4px 0 0 var(--pixel-pink),
-    inset -4px -4px 0 0 rgba(255,32,121,0.1);
-}
-
-/* ── Pixel button ─────────────────────────────────────────────── */
+/* ── Pixel UI Components ── */
 .pixel-btn {
   font-family: 'Press Start 2P', monospace;
   font-size: 10px;
@@ -76,12 +57,11 @@ body {
   border-right: 6px solid #007a73;
   cursor: pointer;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: transform 0.05s, border 0.05s;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   text-decoration: none;
+  transition: transform 0.05s;
 }
 
 .pixel-btn:hover {
@@ -90,92 +70,12 @@ body {
   box-shadow: 6px 6px 0 0 #007a73;
 }
 
-.pixel-btn:active {
-  transform: translate(2px, 2px);
-  border-bottom: 2px solid #007a73;
-  border-right: 2px solid #007a73;
-}
-
 .pixel-btn-yellow {
   background: var(--pixel-yellow);
   border-bottom-color: #9a8900;
   border-right-color: #9a8900;
-  color: var(--pixel-black);
 }
 
-.pixel-btn-yellow:hover {
-  background: #ffef33;
-  box-shadow: 6px 6px 0 0 #9a8900;
-}
-
-.pixel-btn-pink {
-  background: var(--pixel-pink);
-  border-bottom-color: #990040;
-  border-right-color: #990040;
-  color: white;
-}
-
-.pixel-btn-pink:hover {
-  background: #ff4492;
-  box-shadow: 6px 6px 0 0 #990040;
-}
-
-/* ── Scanline overlay ─────────────────────────────────────────── */
-.scanlines::after {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.18) 2px,
-    rgba(0,0,0,0.18) 4px
-  );
-  pointer-events: none;
-  z-index: 9999;
-}
-
-/* ── CRT effect on body ──────────────────────────────────────── */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background:
-    radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.5) 100%);
-  pointer-events: none;
-  z-index: 9998;
-}
-
-/* ── Pixel grid background ───────────────────────────────────── */
-.pixel-bg {
-  background-color: var(--pixel-dark);
-  background-image:
-    linear-gradient(rgba(0,255,245,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,245,0.03) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-/* ── Pixel card ──────────────────────────────────────────────── */
-.pixel-card {
-  background: var(--pixel-navy);
-  border: 4px solid var(--pixel-cyan);
-  box-shadow: 8px 8px 0 0 rgba(0,255,245,0.4);
-  padding: 24px;
-  position: relative;
-}
-
-.pixel-card::before {
-  content: '';
-  position: absolute;
-  top: 2px; left: 2px;
-  right: 2px; bottom: 2px;
-  border: 2px solid rgba(0,255,245,0.2);
-  pointer-events: none;
-}
-
-/* ── Pixel input ─────────────────────────────────────────────── */
 .pixel-input {
   font-family: 'VT323', monospace;
   font-size: 18px;
@@ -184,198 +84,27 @@ body::before {
   color: var(--pixel-cyan);
   padding: 10px 14px;
   outline: none;
-  width: 100%;
-  transition: box-shadow 0.1s;
 }
 
-.pixel-input:focus {
-  box-shadow: 0 0 0 3px rgba(0,255,245,0.3), 4px 4px 0 0 var(--pixel-cyan);
-}
+/* ── Animations ── */
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.blink { animation: blink 1s step-end infinite; }
 
-.pixel-input::placeholder {
-  color: #444;
-}
+@keyframes pixel-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.pixel-float { animation: pixel-float 2s steps(4) infinite; }
 
-/* ── Pixel select ─────────────────────────────────────────────── */
-.pixel-select {
-  font-family: 'VT323', monospace;
-  font-size: 18px;
-  background: var(--pixel-black);
-  border: 3px solid var(--pixel-cyan);
-  color: var(--pixel-cyan);
-  padding: 10px 14px;
-  outline: none;
-  width: 100%;
-  appearance: none;
-  cursor: pointer;
-}
-
-/* ── Pixel label ─────────────────────────────────────────────── */
-.pixel-label {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
-  color: var(--pixel-grey);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-  display: block;
-}
-
-/* ── Blinking cursor animation ───────────────────────────────── */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-.blink {
-  animation: blink 1s step-end infinite;
-}
-
-/* ── Pixel walking animation ─────────────────────────────────── */
-@keyframes pixel-walk {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-}
-
-.pixel-walk {
-  animation: pixel-walk 0.6s steps(2) infinite;
-}
-
-/* ── Pixel float ─────────────────────────────────────────────── */
-@keyframes pixel-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.pixel-float {
-  animation: pixel-float 2s steps(4) infinite;
-}
-
-/* ── Scrolling star background ───────────────────────────────── */
-@keyframes pixel-scroll {
-  from { background-position: 0 0; }
-  to { background-position: -256px 256px; }
-}
-
-/* ── Glitch text ─────────────────────────────────────────────── */
-@keyframes glitch {
-  0% { text-shadow: 2px 2px var(--pixel-pink), -2px -2px var(--pixel-cyan); }
-  25% { text-shadow: -2px 2px var(--pixel-cyan), 2px -2px var(--pixel-pink); }
-  50% { text-shadow: 2px -2px var(--pixel-yellow), -2px 2px var(--pixel-purple); }
-  75% { text-shadow: -2px -2px var(--pixel-pink), 2px 2px var(--pixel-cyan); }
-  100% { text-shadow: 2px 2px var(--pixel-pink), -2px -2px var(--pixel-cyan); }
-}
-
-.glitch {
-  animation: glitch 3s steps(1) infinite;
-}
-
-/* ── Pixel progress bar ──────────────────────────────────────── */
-.pixel-progress {
-  height: 16px;
-  background: var(--pixel-black);
-  border: 3px solid var(--pixel-cyan);
-  box-shadow: 2px 2px 0 0 var(--pixel-cyan);
-  overflow: hidden;
-}
-
-.pixel-progress-fill {
-  height: 100%;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--pixel-cyan) 0px,
-    var(--pixel-cyan) 10px,
-    rgba(0,255,245,0.5) 10px,
-    rgba(0,255,245,0.5) 12px
-  );
-  transition: width 0.3s steps(8);
-}
-
-/* ── Pixel badge ─────────────────────────────────────────────── */
-.pixel-badge {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
-  padding: 4px 8px;
-  background: var(--pixel-black);
-  border: 2px solid var(--pixel-cyan);
-  color: var(--pixel-cyan);
-  display: inline-block;
-  text-transform: uppercase;
-}
-
-/* ── Screen flicker on load ──────────────────────────────────── */
-@keyframes screen-on {
-  0% { opacity: 0; filter: brightness(0); }
-  20% { opacity: 0.8; filter: brightness(2); }
-  40% { opacity: 0.2; filter: brightness(0); }
-  60% { opacity: 1; filter: brightness(1.5); }
-  100% { opacity: 1; filter: brightness(1); }
-}
-
-.screen-on {
-  animation: screen-on 0.6s steps(3) forwards;
-}
-
-/* ── Diagonal stripe pattern ─────────────────────────────────── */
-.pixel-stripe {
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 4px,
-    rgba(0,255,245,0.06) 4px,
-    rgba(0,255,245,0.06) 8px
-  );
-}
-
-/* ── Selection color ─────────────────────────────────────────── */
-::selection {
-  background: var(--pixel-cyan);
-  color: var(--pixel-black);
-}
-
-/* ── Scrollbar ───────────────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--pixel-black);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--pixel-cyan);
-  border: 2px solid var(--pixel-black);
-}/* ── Leaflet Base Styles ── */
+/* ── Leaflet & Map Styling ── */
 @import "leaflet/dist/leaflet.css";
 
-/* ── Custom Pixel Map Styles ── */
 .pixel-map-container {
   border: 4px solid var(--pixel-cyan);
   box-shadow: 8px 8px 0 0 rgba(0, 255, 245, 0.2);
-  background: var(--pixel-black);
 }
 
-/* Colorize the dark tiles to look like a glowing cyan/green radar screen */
 .retro-tiles {
-  filter: sepia(1) hue-rotate(130deg) saturate(300%) brightness(0.9) contrast(1.2);
-  image-rendering: pixelated;
+  filter: sepia(1) hue-rotate(130deg) saturate(300%) brightness(0.8) contrast(1.2);
 }
 
-/* Animation for the Companion Marker */
-@keyframes hop {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-.companion-marker {
-  font-size: 32px;
-  line-height: 1;
-  text-shadow: 2px 2px 0 var(--pixel-black);
-  animation: hop 1s infinite;
-  margin-left: -16px;
-  margin-top: -16px;
-}
-
-/* ── Overriding Leaflet's Default Styles for an 8-Bit Look ── */
-
-/* Make the popup boxes dark, square, and neon-bordered */
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
   background: var(--pixel-black) !important;
   border: 3px solid var(--pixel-cyan) !important;
@@ -384,33 +113,260 @@ body::before {
   box-shadow: 6px 6px 0 0 rgba(0, 255, 245, 0.3) !important;
 }
 
-/* Move the little triangle pointer to match */
-.leaflet-popup-tip {
-  border-top: none !important;
-  border-left: none !important;
-  width: 12px !important;
-  height: 12px !important;
+.leaflet-popup-content { font-family: 'VT323', monospace !important; font-size: 18px !important; }
+.leaflet-control-attribution { display: none !important; }
+
+/* ══════════════════════════════════════════════════════════════════
+   PIXEL GEOSEARCH — SURGICAL OVERRIDE
+   Built by countering every rule in geosearch.css line-by-line.
+   Uses !important on everything to guarantee victory over the lib.
+══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. BAR CONTAINER ── */
+.leaflet-geosearch-bar {
+  width: 340px !important;
+  max-width: calc(100% - 80px) !important;
 }
 
-/* Fix popup text font */
-.leaflet-popup-content {
+/* ── 2. OUTER SHELL (covers .geosearch, .leaflet-bar, .leaflet-control-geosearch) ── */
+.geosearch,
+.geosearch.leaflet-bar,
+.leaflet-control-geosearch,
+.leaflet-geosearch-bar {
+  border: 3px solid var(--pixel-cyan) !important;
+  border-radius: 0 !important;
+  background: var(--pixel-navy) !important;
+  background-color: var(--pixel-navy) !important;
+  box-shadow: 5px 5px 0 0 var(--pixel-blue) !important;
+  overflow: visible !important;
+}
+
+/* ── 3. NUCLEAR CHILD RESET — wipe every border/bg the lib injects ── */
+.geosearch *,
+.geosearch *::before,
+.geosearch *::after,
+.leaflet-control-geosearch *,
+.leaflet-control-geosearch *::before,
+.leaflet-control-geosearch *::after {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-clip: border-box !important;
+}
+
+/* Also kill the leaflet-bar a borders specifically */
+.geosearch.leaflet-bar a,
+.geosearch.leaflet-bar a:first-child,
+.geosearch.leaflet-bar a:last-child,
+.geosearch.leaflet-bar a:hover,
+.geosearch.leaflet-bar a:focus {
+  border: none !important;
+  border-bottom: none !important;
+  border-top: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* ── 4. FORM ── */
+.geosearch form,
+.leaflet-control-geosearch form,
+.leaflet-geosearch-bar form,
+.leaflet-geosearch-bar form.open,
+.leaflet-geosearch-button form,
+.leaflet-touch .leaflet-geosearch-bar form {
+  background: var(--pixel-navy) !important;
+  background-color: var(--pixel-navy) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: auto !important;
+}
+
+/* ── 5. TEXT INPUT ── */
+.geosearch input,
+.geosearch form input,
+.leaflet-control-geosearch form input,
+.leaflet-geosearch-bar form input,
+.leaflet-touch .leaflet-geosearch-bar form input {
+  background: transparent !important;
+  background-color: transparent !important;
+  font-family: 'VT323', monospace !important;
+  font-size: 20px !important;
+  color: #fff !important;
+  caret-color: var(--pixel-cyan) !important;
+  padding: 8px 14px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  outline: none !important;
+  flex: 1 !important;
+  height: 40px !important;
+  min-width: 0 !important;
+  text-indent: 0 !important;
+  margin: 0 !important;
+}
+
+.geosearch input::placeholder,
+.leaflet-control-geosearch input::placeholder {
+  color: rgba(0,255,245,0.4) !important;
+  font-family: 'VT323', monospace !important;
+}
+
+/* ── 6. MAGNIFYING GLASS (a.glass / a.leaflet-bar-part) ── */
+.geosearch a.glass,
+.geosearch a.leaflet-bar-part,
+.leaflet-control-geosearch a.leaflet-bar-part,
+.leaflet-geosearch-button.active .leaflet-bar-part {
+  background: var(--pixel-navy) !important;
+  background-color: var(--pixel-navy) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+}
+
+/* Make the pseudo-element magnifier visible on dark background */
+.leaflet-control-geosearch a.leaflet-bar-part:before {
+  border-top-color: var(--pixel-cyan) !important;
+}
+.leaflet-control-geosearch a.leaflet-bar-part:after {
+  border-color: var(--pixel-cyan) !important;
+}
+
+/* Also handle the ::after icon on a.glass */
+.geosearch a.glass::after {
+  filter: brightness(0) invert(1) !important;
+  opacity: 0.9 !important;
+}
+
+/* ── 7. RESET (×) BUTTON ── */
+.geosearch button.reset,
+.leaflet-control-geosearch button.reset,
+.leaflet-touch .leaflet-control-geosearch button.reset {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  color: var(--pixel-pink) !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  padding: 0 12px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  cursor: pointer !important;
+  position: relative !important;
+  right: auto !important;
+  top: auto !important;
+}
+
+.geosearch button.reset:hover,
+.leaflet-control-geosearch button.reset:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #fff !important;
+}
+
+/* ── 8. RESULTS DROPDOWN ── */
+.geosearch .results,
+.leaflet-control-geosearch .results {
+  background: var(--pixel-black) !important;
+  background-color: var(--pixel-black) !important;
+  border: 3px solid var(--pixel-cyan) !important;
+  border-radius: 0 !important;
+  margin-top: 4px !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-height: 240px !important;
+  overflow-y: auto !important;
+  box-shadow: 5px 5px 0 0 rgba(0,0,0,0.8) !important;
+}
+
+/* Kill the ::after pseudo-element border the lib adds */
+.geosearch .results.active:after,
+.leaflet-geosearch-bar .results.active:after,
+.leaflet-touch .leaflet-control-geosearch .results.active:after {
+  display: none !important;
+  border: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.leaflet-control-geosearch .results.active {
+  border-top: 3px solid var(--pixel-cyan) !important;
+  padding: 0 !important;
+}
+
+/* ── 9. EACH RESULT ROW ── */
+.geosearch .results > *,
+.leaflet-control-geosearch .results > * {
   font-family: 'VT323', monospace !important;
   font-size: 18px !important;
-  margin: 12px !important;
-}
-
-/* Make the close 'X' button pink and retro */
-.leaflet-container a.leaflet-popup-close-button {
-  color: var(--pixel-pink) !important;
-  font-family: 'Press Start 2P', monospace !important;
-  font-size: 12px !important;
-  padding-top: 4px !important;
-}
-.leaflet-container a.leaflet-popup-close-button:hover {
   color: var(--pixel-white) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(0,255,245,0.1) !important;
+  padding: 10px 14px !important;
+  line-height: 1.4 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  transition: background 0.08s, padding-left 0.08s !important;
 }
 
-/* Hide the white bottom-right attribution bar to keep it looking like a game */
-.leaflet-control-attribution {
-  display: none !important;
+.geosearch .results > *:last-child {
+  border-bottom: none !important;
+}
+
+/* ── 10. RESULT HOVER / ACTIVE ── */
+.geosearch .results > *:hover,
+.geosearch .results > *.active,
+.leaflet-control-geosearch .results > .active,
+.leaflet-control-geosearch .results > :hover {
+  background: rgba(0,255,245,0.12) !important;
+  background-color: rgba(0,255,245,0.12) !important;
+  border-color: transparent !important;
+  border-bottom: 1px solid rgba(0,255,245,0.1) !important;
+  color: var(--pixel-cyan) !important;
+  padding-left: 20px !important;
+}
+
+/* ── 11. PENDING / ERROR STATES ── */
+.leaflet-control-geosearch.pending a.leaflet-bar-part:after {
+  border-color: var(--pixel-cyan) !important;
+  border-top-color: var(--pixel-navy) !important;
+}
+
+.leaflet-control-geosearch.error a.leaflet-bar-part:after {
+  color: var(--pixel-pink) !important;
+}
+
+/* ── 12. NOT FOUND ── */
+.leaflet-bar-notfound {
+  font-family: 'VT323', monospace !important;
+  font-style: normal !important;
+  color: var(--pixel-grey) !important;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--pixel-black); }
+::-webkit-scrollbar-thumb {
+  background: var(--pixel-cyan);
+  border: 2px solid var(--pixel-black);
 }

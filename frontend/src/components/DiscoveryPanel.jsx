@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { apiService } from '../service/api';
 import toast from 'react-hot-toast';
-import PixelMap from './PixelMap';
 
 export default function DiscoveryPanel() {
   const [activeTab, setActiveTab] = useState('accommodations');
@@ -18,7 +17,11 @@ export default function DiscoveryPanel() {
       setLoading(true);
       const data = await apiService.getAccommodations(city, type);
       setItems(data);
-    } catch { toast.error('Failed to load accommodations'); } finally { setLoading(false); }
+    } catch { 
+      toast.error('Failed to load accommodations'); 
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   const fetchVendors = async (type = null) => {
@@ -26,7 +29,11 @@ export default function DiscoveryPanel() {
       setLoading(true);
       const data = await apiService.getVendors(city, type);
       setItems(data);
-    } catch { toast.error('Failed to load vendors'); } finally { setLoading(false); }
+    } catch { 
+      toast.error('Failed to load vendors'); 
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   useEffect(() => {
@@ -35,7 +42,7 @@ export default function DiscoveryPanel() {
   }, [activeTab, city]);
 
   return (
-    <section id="discover-panel" style={{ padding: '80px 24px', position: 'relative' }}>
+    <section id="discover-panel" style={{ padding: '40px 24px', position: 'relative' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
 
         {/* ── Header ──────────────────────────────────────────────────── */}
@@ -96,7 +103,10 @@ export default function DiscoveryPanel() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                setActiveTab(tab.id);
+                setSelectedType(null); // Reset filter when switching tabs
+              }}
               style={{
                 fontFamily: "'Press Start 2P', monospace",
                 fontSize: 9,
@@ -109,8 +119,6 @@ export default function DiscoveryPanel() {
                 cursor: 'pointer',
                 transition: 'transform 0.05s',
               }}
-              onMouseDown={e => e.target.style.transform = 'translate(2px, 2px)'}
-              onMouseUp={e => e.target.style.transform = 'translate(0, 0)'}
             >
               {tab.label}
             </button>
@@ -118,7 +126,7 @@ export default function DiscoveryPanel() {
         </div>
 
         {/* ── Type Filters ────────────────────────────────────────────── */}
-        <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 32, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 48, flexWrap: 'wrap' }}>
           <button
             onClick={() => { setSelectedType(null); activeTab === 'accommodations' ? fetchAccommodations() : fetchVendors(); }}
             className="pixel-badge"
@@ -149,11 +157,6 @@ export default function DiscoveryPanel() {
               {type}
             </button>
           ))}
-        </div>
-
-        {/* ── NEW: PIXEL MAP OVERWORLD (Passed `items` variable) ── */}
-        <div style={{ marginBottom: '48px' }}>
-          <PixelMap items={items} />
         </div>
 
         {/* ── Loading ─────────────────────────────────────────────────── */}
@@ -212,28 +215,19 @@ export default function DiscoveryPanel() {
 
 // ── Pixel Discovery Card ─────────────────────────────────────────────
 function DiscoveryCard({ item, index, type }) {
-  // 1. Check if it's an ad
   const isAd = item.isFeatured;
-  
-  // 2. Remove yellow from the default rotation so it's reserved exclusively for featured ads
   const colors = ['var(--pixel-cyan)', 'var(--pixel-pink)', 'var(--pixel-green)'];
-  
-  // If it's an ad, force it to be yellow/gold. Otherwise, rotate through the other colors.
   const color = isAd ? 'var(--pixel-yellow)' : colors[index % colors.length];
-
-  // 3. Set the affiliate link based on the type
   const affiliateLink = type === 'accommodations' ? item.externalUrl : item.affiliateUrl;
   
-  // 4. Handle saving to backpack
   const handleSaveToBackpack = async (e) => {
-    e.preventDefault(); // Prevent navigating if wrapped in a link
+    e.preventDefault();
     try {
       const itemType = type === 'accommodations' ? 'ACCOMMODATION' : 'VENDOR';
-      // Hardcoding userId 1 for now until authentication is added
       await apiService.addToBackpack(1, itemType, item.id);
-      toast.success(`${item.name} saved to Backpack! 🎒`);
+      toast.success(`${item.name} saved! 🎒`);
     } catch (err) {
-      toast.error('Failed to save. You might have already saved this!');
+      toast.error('Failed to save or already in backpack.');
     }
   };
   
@@ -248,174 +242,91 @@ function DiscoveryCard({ item, index, type }) {
         flexDirection: 'column', 
         transition: 'transform 0.1s',
       }}
-      onMouseEnter={e => {
-        e.currentTarget.style.transform = 'translate(-3px, -3px)';
-        e.currentTarget.style.boxShadow = `9px 9px 0 0 ${color}60`;
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.transform = 'translate(0, 0)';
-        e.currentTarget.style.boxShadow = `6px 6px 0 0 ${color}60`;
-      }}
     >
-      {/* ── SPONSORED BADGE ── */}
       {isAd && (
         <div style={{
-          position: 'absolute',
-          top: -12,
-          right: 12,
-          background: 'var(--pixel-yellow)',
-          color: 'var(--pixel-black)',
-          padding: '4px 8px',
-          fontFamily: "'Press Start 2P', monospace",
-          fontSize: '8px',
-          border: '2px solid black',
-          zIndex: 10,
+          position: 'absolute', top: -12, right: 12,
+          background: 'var(--pixel-yellow)', color: 'var(--pixel-black)',
+          padding: '4px 8px', fontFamily: "'Press Start 2P', monospace",
+          fontSize: '8px', border: '2px solid black', zIndex: 10,
         }}>
           ★ FEATURED
         </div>
       )}
 
-      {/* Card title bar */}
       <div style={{
-        background: color,
-        padding: '6px 12px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        background: color, padding: '6px 12px',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
         <span style={{
-          fontFamily: "'Press Start 2P', monospace",
-          fontSize: 7,
-          color: 'var(--pixel-black)',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          maxWidth: '60%',
+          fontFamily: "'Press Start 2P', monospace", fontSize: 7, color: 'var(--pixel-black)',
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%',
         }}>
           {item.name}
         </span>
-        <span style={{
-          fontFamily: "'Press Start 2P', monospace",
-          fontSize: 7,
-          color: 'var(--pixel-black)',
-        }}>
+        <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 7, color: 'var(--pixel-black)' }}>
           {item.type}
         </span>
       </div>
 
       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', flex: 1 }}>
-        {/* Location */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12,
-        }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
           <span style={{ fontSize: 12 }}>📍</span>
-          <span style={{
-            fontFamily: "'VT323', monospace",
-            fontSize: 16,
-            color: 'var(--pixel-grey)',
-          }}>{item.city}</span>
+          <span style={{ fontFamily: "'VT323', monospace", fontSize: 16, color: 'var(--pixel-grey)' }}>{item.city}</span>
         </div>
 
-        {/* Rating */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
           <span style={{ fontSize: 12 }}>⭐</span>
-          <span style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: 10,
-            color: 'var(--pixel-yellow)',
-          }}>
+          <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 10, color: 'var(--pixel-yellow)' }}>
             {item.rating || item.googleRating || 'N/A'}
           </span>
         </div>
 
-        {/* Description */}
         <p style={{
-          fontFamily: "'VT323', monospace",
-          fontSize: 16,
-          color: 'var(--pixel-grey)',
-          lineHeight: 1.4,
-          marginBottom: 16,
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-          flex: 1, 
+          fontFamily: "'VT323', monospace", fontSize: 16, color: 'var(--pixel-grey)',
+          lineHeight: 1.4, marginBottom: 16, display: '-webkit-box',
+          WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', flex: 1, 
         }}>
           {item.description || item.speciality || 'No description available'}
         </p>
 
-        {/* Price */}
         {type === 'accommodations' && item.pricePerNight && (
           <div style={{
-            background: 'var(--pixel-black)',
-            border: `2px solid ${color}`,
-            padding: '6px 10px',
-            marginBottom: 16,
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 4,
+            background: 'var(--pixel-black)', border: `2px solid ${color}`,
+            padding: '6px 10px', marginBottom: 16, display: 'inline-flex',
+            alignItems: 'center', gap: 4,
           }}>
             <span style={{ fontSize: 12 }}>💰</span>
-            <span style={{
-              fontFamily: "'Press Start 2P', monospace",
-              fontSize: 9,
-              color,
-            }}>
+            <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 9, color }}>
               ₹{item.pricePerNight}/NIGHT
             </span>
           </div>
         )}
 
-        {/* ── CALL TO ACTION BUTTONS ── */}
         <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
-          
-          {/* ♥ Save to Backpack Button */}
           <button
             onClick={handleSaveToBackpack}
             style={{
-              background: 'var(--pixel-navy)',
-              border: `2px solid ${color}`,
-              borderBottom: `4px solid ${color}`,
-              borderRight: `4px solid ${color}`,
-              padding: '10px',
-              color: color,
-              cursor: 'pointer',
-              transition: 'transform 0.05s',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              background: 'var(--pixel-navy)', border: `2px solid ${color}`,
+              borderBottom: `4px solid ${color}`, borderRight: `4px solid ${color}`,
+              padding: '10px', color: color, cursor: 'pointer',
             }}
-            onMouseDown={e => e.currentTarget.style.transform = 'translate(2px, 2px)'}
-            onMouseUp={e => e.currentTarget.style.transform = 'translate(0, 0)'}
-            title="Save to Backpack"
           >
             ♥
           </button>
 
-          {/* Affiliate / View Offer Button */}
           {affiliateLink ? (
             <a
               href={affiliateLink}
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                flex: 1,
-                display: 'block',
-                textAlign: 'center',
-                textDecoration: 'none',
-                background: 'var(--pixel-black)',
-                border: `2px solid ${color}`,
-                borderBottom: `4px solid ${color}`,
-                borderRight: `4px solid ${color}`,
-                padding: '10px 12px',
-                fontFamily: "'Press Start 2P', monospace",
-                fontSize: 9,
-                color: color,
-                cursor: 'pointer',
-                transition: 'transform 0.05s',
+                flex: 1, display: 'block', textAlign: 'center', textDecoration: 'none',
+                background: 'var(--pixel-black)', border: `2px solid ${color}`,
+                borderBottom: `4px solid ${color}`, borderRight: `4px solid ${color}`,
+                padding: '10px 12px', fontFamily: "'Press Start 2P', monospace",
+                fontSize: 9, color: color, cursor: 'pointer',
               }}
-              onMouseDown={e => e.target.style.transform = 'translate(2px, 2px)'}
-              onMouseUp={e => e.target.style.transform = 'translate(0, 0)'}
             >
               {type === 'accommodations' ? '▶ BOOK NOW' : '▶ VIEW OFFER'}
             </a>
@@ -423,14 +334,9 @@ function DiscoveryCard({ item, index, type }) {
             <button
               disabled
               style={{
-                flex: 1,
-                background: '#222',
-                border: '2px solid #444',
-                padding: '10px 12px',
-                fontFamily: "'Press Start 2P', monospace",
-                fontSize: 9,
-                color: '#666',
-                cursor: 'not-allowed',
+                flex: 1, background: '#222', border: '2px solid #444',
+                padding: '10px 12px', fontFamily: "'Press Start 2P', monospace",
+                fontSize: 9, color: '#666', cursor: 'not-allowed',
               }}
             >
               NO OFFERS
