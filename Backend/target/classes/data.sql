@@ -44,3 +44,24 @@ INSERT INTO fair_price (city, category, item_name, min_price, max_price) VALUES 
 INSERT INTO fair_price (city, category, item_name, min_price, max_price) VALUES ('Darjeeling', 'Food', 'Momos (Plate)', 60.00, 120.00);
 INSERT INTO fair_price (city, category, item_name, min_price, max_price) VALUES ('Darjeeling', 'Transport', 'Shared Jeep (Town)', 20.00, 50.00);
 INSERT INTO fair_price (city, category, item_name, min_price, max_price) VALUES ('Digha', 'Food', 'Fried Fish Plate', 100.00, 250.00);
+
+
+-- ── 5. ITINERARIES (Curated Routes) ─────────────────────────────────
+INSERT INTO itinerary (title, description, city, duration) 
+VALUES ('The Ultimate Kolkata Heritage Walk', 'Step back in time and explore the colonial heart of India, featuring history, art, and legendary food.', 'Kolkata', '1 Day');
+
+-- ── 6. ITINERARY STOPS (Timeline) ───────────────────────────────────
+-- Note: We assume the itinerary above gets ID = 1 since it is the first one inserted.
+-- We are flagging the lunch and coffee stops as "is_sponsored = true" to show how you can monetize the app!
+
+INSERT INTO itinerary_stop (itinerary_id, stop_number, location_name, description, time_suggestion, is_sponsored) 
+VALUES (1, 1, 'Victoria Memorial', 'Start your day exploring this iconic white marble monument and its sprawling gardens.', '09:00 AM', false);
+
+INSERT INTO itinerary_stop (itinerary_id, stop_number, location_name, description, time_suggestion, is_sponsored) 
+VALUES (1, 2, 'Peter Cat', 'Grab a legendary Chelo Kebab for lunch. Highly recommended by Buddy!', '01:00 PM', true);
+
+INSERT INTO itinerary_stop (itinerary_id, stop_number, location_name, description, time_suggestion, is_sponsored) 
+VALUES (1, 3, 'Indian Museum', 'Walk off lunch by exploring the oldest and largest museum in India.', '03:00 PM', false);
+
+INSERT INTO itinerary_stop (itinerary_id, stop_number, location_name, description, time_suggestion, is_sponsored) 
+VALUES (1, 4, 'Blue Tokai Coffee', 'Relax with a specialty brew and reflect on the day. Show this app for a free cookie!', '05:30 PM', true);

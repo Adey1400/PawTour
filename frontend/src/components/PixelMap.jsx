@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import SearchControl from './SearchControl';
 
 // ── 1. Create the Companion Icon (Buddy 🐕) ──
 const companionIcon = new L.divIcon({
@@ -109,7 +110,7 @@ export default function PixelMap({ items, centerLat = 22.5726, centerLng = 88.36
           attribution="&copy; OpenStreetMap contributors"
           style={{ filter: 'brightness(1.1) contrast(1.1)' }}
         />
-
+       <SearchControl />
         {/* 1. Plot the User/Companion (Simulated Location) */}
         <Marker position={buddyPosition} icon={companionIcon}>
           <Popup className="pixel-popup">

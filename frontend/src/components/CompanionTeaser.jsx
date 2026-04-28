@@ -1,3 +1,5 @@
+import React from 'react';
+
 const companions = [
   {
     name: 'BUDDY',
@@ -31,6 +33,8 @@ function CompanionCard({ companion }) {
         cursor: 'pointer',
         transition: 'transform 0.1s',
         position: 'relative',
+        display: 'flex',          // Added for height alignment
+        flexDirection: 'column',   // Added for height alignment
       }}
       onMouseEnter={e => {
         e.currentTarget.style.transform = 'translate(-4px, -4px)';
@@ -83,7 +87,7 @@ function CompanionCard({ companion }) {
       </div>
 
       {/* Character info */}
-      <div style={{ padding: '20px 20px' }}>
+      <div style={{ padding: '20px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <h3 style={{
           fontFamily: "'Press Start 2P', monospace",
           fontSize: 16,
@@ -103,13 +107,13 @@ function CompanionCard({ companion }) {
           {companion.breed}
         </p>
 
-        {/* Tip */}
+        {/* Tip - Pushed to bottom with margin-top auto */}
         <p style={{
           fontFamily: "'VT323', monospace",
           fontSize: 15,
           color: 'var(--pixel-grey)',
           lineHeight: 1.5,
-          margin: 0,
+          margin: 'auto 0 0 0',
           padding: '12px',
           background: 'rgba(0, 255, 245, 0.1)',
           border: `2px solid ${companion.color}40`,
@@ -134,7 +138,7 @@ export default function CompanionTeaser() {
           }}>
             <div style={{ height: 3, width: 60, background: 'var(--pixel-pink)' }} />
             <span style={{ fontSize: 8, fontFamily: "'Press Start 2P'", color: 'var(--pixel-pink)' }}>
-          ★ AI GUIDES ★
+              ★ AI GUIDES ★
             </span>
             <div style={{ height: 3, width: 60, background: 'var(--pixel-pink)' }} />
           </div>
@@ -160,10 +164,15 @@ export default function CompanionTeaser() {
           </p>
         </div>
 
+        {/* ── Centered Card Container ─────────────────────────────────────── */}
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-          gap: 32,
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center', // Centers cards horizontally
+          alignItems: 'stretch',     // Ensures cards are same height
+          gap: '40px',               // Balanced spacing
+          maxWidth: '1000px',
+          margin: '0 auto'
         }}>
           {companions.map((companion, idx) => (
             <CompanionCard key={idx} companion={companion} />
@@ -173,7 +182,7 @@ export default function CompanionTeaser() {
         {/* ── Bottom decoration ─────────────────────────────────────────────── */}
         <div style={{
           textAlign: 'center',
-          marginTop: 48,
+          marginTop: 64,
           fontFamily: "'VT323', monospace",
           fontSize: 18,
           color: 'var(--pixel-grey)',
@@ -182,9 +191,9 @@ export default function CompanionTeaser() {
           justifyContent: 'center',
           gap: 16,
         }}>
-          <div style={{ height: 2, width: 80, background: 'var(--pixel-grey)' }} />
+          <div style={{ height: 2, width: 80, background: 'var(--pixel-grey)', opacity: 0.3 }} />
           ★ MORE COMPANIONS COMING SOON ★
-          <div style={{ height: 2, width: 80, background: 'var(--pixel-grey)' }} />
+          <div style={{ height: 2, width: 80, background: 'var(--pixel-grey)', opacity: 0.3 }} />
         </div>
 
       </div>

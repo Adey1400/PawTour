@@ -244,6 +244,18 @@ export const apiService = {
       console.error("[reportPrice] Failed:", error.readableMessage);
       throw error;
     }
+  },
+  /**
+   * Fetch curated itineraries for a city
+   */
+  async getItineraries(city) {
+    try {
+      const { data } = await apiClient.get(`/itineraries/${city}`);
+      return data;
+    } catch (error) {
+      console.error("[getItineraries] Failed:", error.readableMessage);
+      throw error;
+    }
   }
 };
 
