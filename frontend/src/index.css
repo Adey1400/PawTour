@@ -141,7 +141,7 @@ body::before {
   overflow: visible !important;
 }
 
-/* ── 3. NUCLEAR CHILD RESET — wipe every border/bg the lib injects ── */
+/* ── 3. NUCLEAR CHILD RESET ── */
 .geosearch *,
 .geosearch *::before,
 .geosearch *::after,
@@ -184,6 +184,8 @@ body::before {
   box-shadow: none !important;
   margin: 0 !important;
   padding: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
   display: flex !important;
   align-items: center !important;
   position: relative !important;
@@ -205,7 +207,7 @@ body::before {
   font-size: 20px !important;
   color: #fff !important;
   caret-color: var(--pixel-cyan) !important;
-  padding: 8px 14px !important;
+  padding: 8px 14px 8px 8px !important;
   border: none !important;
   border-radius: 0 !important;
   outline: none !important;
@@ -237,20 +239,39 @@ body::before {
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
+  position: relative !important;     /* ← REQUIRED: anchors the pseudo-elements */
+  flex-shrink: 0 !important;
 }
 
-/* Make the pseudo-element magnifier visible on dark background */
-.leaflet-control-geosearch a.leaflet-bar-part:before {
-  border-top-color: var(--pixel-cyan) !important;
-}
-.leaflet-control-geosearch a.leaflet-bar-part:after {
-  border-color: var(--pixel-cyan) !important;
+/* ── 6a. RESTORE MAGNIFIER ICON — draw it ourselves after the nuclear reset ── */
+.geosearch a.glass::before,
+.leaflet-control-geosearch a.leaflet-bar-part::before {
+  content: '' !important;
+  display: block !important;
+  width: 9px !important;
+  height: 9px !important;
+  border: 2px solid var(--pixel-cyan) !important;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  position: absolute !important;
+  top: 10px !important;
+  left: 11px !important;
 }
 
-/* Also handle the ::after icon on a.glass */
-.geosearch a.glass::after {
-  filter: brightness(0) invert(1) !important;
-  opacity: 0.9 !important;
+.geosearch a.glass::after,
+.leaflet-control-geosearch a.leaflet-bar-part::after {
+  content: '' !important;
+  display: block !important;
+  width: 2px !important;
+  height: 8px !important;
+  background: var(--pixel-cyan) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  position: absolute !important;
+  top: 20px !important;
+  left: 22px !important;
+  transform: rotate(-45deg) !important;
 }
 
 /* ── 7. RESET (×) BUTTON ── */
@@ -271,6 +292,7 @@ body::before {
   position: relative !important;
   right: auto !important;
   top: auto !important;
+  flex-shrink: 0 !important;
 }
 
 .geosearch button.reset:hover,
@@ -347,13 +369,25 @@ body::before {
 }
 
 /* ── 11. PENDING / ERROR STATES ── */
-.leaflet-control-geosearch.pending a.leaflet-bar-part:after {
-  border-color: var(--pixel-cyan) !important;
-  border-top-color: var(--pixel-navy) !important;
+.leaflet-control-geosearch.pending a.leaflet-bar-part::after {
+  border: none !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-top: 2px solid var(--pixel-cyan) !important;
+  border-right: 2px solid transparent !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  top: 14px !important;
+  left: 14px !important;
+  animation: blink 0.6s linear infinite !important;
 }
 
-.leaflet-control-geosearch.error a.leaflet-bar-part:after {
-  color: var(--pixel-pink) !important;
+.leaflet-control-geosearch.pending a.leaflet-bar-part::before {
+  display: none !important;
+}
+
+.leaflet-control-geosearch.error a.leaflet-bar-part::after {
+  background: var(--pixel-pink) !important;
 }
 
 /* ── 12. NOT FOUND ── */
