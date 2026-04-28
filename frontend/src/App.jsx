@@ -2,19 +2,49 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
 import LandingPage from './pages/LandingPage';
-import GameView from './pages/GameView';
+import DiscoverPage from './pages/DiscoverPage';
+import ToolsPage from './pages/ToolsPage';
+import MapPage from './pages/MapPage';
 
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#0B1120] text-slate-50 selection:bg-cyan-500/30 overflow-hidden relative">
+      <div className="scanlines screen-on" style={{ minHeight: '100vh', background: 'var(--pixel-dark)', overflowX: 'hidden' }}>
         
-        {/* ── Glowing Background Effects ────────────────────────────────── */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-[120px] -z-10"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[120px] -z-10"></div>
-        <div className="absolute top-1/2 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px] -z-10"></div>
+        {/* ── Pixel Grid Background ─────────────────────────────────────── */}
+        <div className="pixel-bg" style={{ position: 'fixed', inset: 0, zIndex: -1 }} />
 
-        {/* ── React Hot Toast Notifications ────────────────────────────────── */}
+        {/* ── Corner Decorations ─────────────────────────────────────────── */}
+        <div style={{
+          position: 'fixed', top: 0, left: 0,
+          width: 80, height: 80,
+          borderTop: '4px solid var(--pixel-cyan)',
+          borderLeft: '4px solid var(--pixel-cyan)',
+          zIndex: 9990, pointerEvents: 'none', opacity: 0.5
+        }} />
+        <div style={{
+          position: 'fixed', top: 0, right: 0,
+          width: 80, height: 80,
+          borderTop: '4px solid var(--pixel-cyan)',
+          borderRight: '4px solid var(--pixel-cyan)',
+          zIndex: 9990, pointerEvents: 'none', opacity: 0.5
+        }} />
+        <div style={{
+          position: 'fixed', bottom: 0, left: 0,
+          width: 80, height: 80,
+          borderBottom: '4px solid var(--pixel-cyan)',
+          borderLeft: '4px solid var(--pixel-cyan)',
+          zIndex: 9990, pointerEvents: 'none', opacity: 0.5
+        }} />
+        <div style={{
+          position: 'fixed', bottom: 0, right: 0,
+          width: 80, height: 80,
+          borderBottom: '4px solid var(--pixel-cyan)',
+          borderRight: '4px solid var(--pixel-cyan)',
+          zIndex: 9990, pointerEvents: 'none', opacity: 0.5
+        }} />
+
+        {/* ── React Hot Toast Notifications ─────────────────────────────── */}
         <Toaster
           position="top-right"
           reverseOrder={false}
@@ -22,34 +52,33 @@ export default function App() {
           toastOptions={{
             duration: 4000,
             style: {
-              background: '#0B1120',
-              color: '#ffffff',
-              border: '1px solid rgba(34, 211, 238, 0.3)',
-              borderRadius: '8px',
-              backdropFilter: 'blur(10px)',
+              background: '#1a1a2e',
+              color: '#00fff5',
+              border: '3px solid #00fff5',
+              borderRadius: '0',
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: '9px',
+              boxShadow: '4px 4px 0 0 #007a73',
+              padding: '12px 16px',
             },
             success: {
-              iconTheme: {
-                primary: '#06B6D4',
-                secondary: '#0B1120',
-              },
+              iconTheme: { primary: '#39ff14', secondary: '#1a1a2e' },
             },
             error: {
-              iconTheme: {
-                primary: '#ef4444',
-                secondary: '#0B1120',
-              },
+              iconTheme: { primary: '#ff2079', secondary: '#1a1a2e' },
             },
           }}
         />
 
-        {/* ── Navbar (Persistent) ──────────────────────────────────────────── */}
+        {/* ── Navbar ─────────────────────────────────────────────────────── */}
         <Navbar />
 
-        {/* ── Routes ───────────────────────────────────────────────────────── */}
+        {/* ── Routes ─────────────────────────────────────────────────────── */}
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/play" element={<GameView />} />
+          <Route path="/discover" element={<DiscoverPage />} />
+          <Route path="/tools" element={<ToolsPage />} />
+          <Route path="/map" element={<MapPage />} />
         </Routes>
       </div>
     </BrowserRouter>

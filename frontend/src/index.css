@@ -1,1 +1,416 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
+
+:root {
+  --pixel-black: #0a0a0a;
+  --pixel-dark: #1a1a2e;
+  --pixel-navy: #16213e;
+  --pixel-blue: #0f3460;
+  --pixel-cyan: #00fff5;
+  --pixel-green: #39ff14;
+  --pixel-yellow: #ffe600;
+  --pixel-orange: #ff6b00;
+  --pixel-pink: #ff2079;
+  --pixel-purple: #9600ff;
+  --pixel-white: #e8e8e8;
+  --pixel-grey: #888888;
+  --pixel-border: 4px solid var(--pixel-cyan);
+}
+
+* {
+  box-sizing: border-box;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Press Start 2P', monospace;
+  background-color: var(--pixel-dark);
+  color: var(--pixel-white);
+  overflow-x: hidden;
+}
+
+/* ── Pixel border utility ─────────────────────────────────────── */
+.pixel-border {
+  border: 4px solid var(--pixel-cyan);
+  box-shadow:
+    4px 4px 0 0 var(--pixel-cyan),
+    inset -4px -4px 0 0 rgba(0,255,245,0.1);
+}
+
+.pixel-border-yellow {
+  border: 4px solid var(--pixel-yellow);
+  box-shadow:
+    4px 4px 0 0 var(--pixel-yellow),
+    inset -4px -4px 0 0 rgba(255,230,0,0.1);
+}
+
+.pixel-border-green {
+  border: 4px solid var(--pixel-green);
+  box-shadow:
+    4px 4px 0 0 var(--pixel-green),
+    inset -4px -4px 0 0 rgba(57,255,20,0.1);
+}
+
+.pixel-border-pink {
+  border: 4px solid var(--pixel-pink);
+  box-shadow:
+    4px 4px 0 0 var(--pixel-pink),
+    inset -4px -4px 0 0 rgba(255,32,121,0.1);
+}
+
+/* ── Pixel button ─────────────────────────────────────────────── */
+.pixel-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 12px 20px;
+  background: var(--pixel-cyan);
+  color: var(--pixel-black);
+  border: none;
+  border-bottom: 6px solid #007a73;
+  border-right: 6px solid #007a73;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: transform 0.05s, border 0.05s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.pixel-btn:hover {
+  background: #00e5d9;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 #007a73;
+}
+
+.pixel-btn:active {
+  transform: translate(2px, 2px);
+  border-bottom: 2px solid #007a73;
+  border-right: 2px solid #007a73;
+}
+
+.pixel-btn-yellow {
+  background: var(--pixel-yellow);
+  border-bottom-color: #9a8900;
+  border-right-color: #9a8900;
+  color: var(--pixel-black);
+}
+
+.pixel-btn-yellow:hover {
+  background: #ffef33;
+  box-shadow: 6px 6px 0 0 #9a8900;
+}
+
+.pixel-btn-pink {
+  background: var(--pixel-pink);
+  border-bottom-color: #990040;
+  border-right-color: #990040;
+  color: white;
+}
+
+.pixel-btn-pink:hover {
+  background: #ff4492;
+  box-shadow: 6px 6px 0 0 #990040;
+}
+
+/* ── Scanline overlay ─────────────────────────────────────────── */
+.scanlines::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.18) 2px,
+    rgba(0,0,0,0.18) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── CRT effect on body ──────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background:
+    radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.5) 100%);
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ── Pixel grid background ───────────────────────────────────── */
+.pixel-bg {
+  background-color: var(--pixel-dark);
+  background-image:
+    linear-gradient(rgba(0,255,245,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,245,0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ── Pixel card ──────────────────────────────────────────────── */
+.pixel-card {
+  background: var(--pixel-navy);
+  border: 4px solid var(--pixel-cyan);
+  box-shadow: 8px 8px 0 0 rgba(0,255,245,0.4);
+  padding: 24px;
+  position: relative;
+}
+
+.pixel-card::before {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  right: 2px; bottom: 2px;
+  border: 2px solid rgba(0,255,245,0.2);
+  pointer-events: none;
+}
+
+/* ── Pixel input ─────────────────────────────────────────────── */
+.pixel-input {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  background: var(--pixel-black);
+  border: 3px solid var(--pixel-cyan);
+  color: var(--pixel-cyan);
+  padding: 10px 14px;
+  outline: none;
+  width: 100%;
+  transition: box-shadow 0.1s;
+}
+
+.pixel-input:focus {
+  box-shadow: 0 0 0 3px rgba(0,255,245,0.3), 4px 4px 0 0 var(--pixel-cyan);
+}
+
+.pixel-input::placeholder {
+  color: #444;
+}
+
+/* ── Pixel select ─────────────────────────────────────────────── */
+.pixel-select {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  background: var(--pixel-black);
+  border: 3px solid var(--pixel-cyan);
+  color: var(--pixel-cyan);
+  padding: 10px 14px;
+  outline: none;
+  width: 100%;
+  appearance: none;
+  cursor: pointer;
+}
+
+/* ── Pixel label ─────────────────────────────────────────────── */
+.pixel-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--pixel-grey);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* ── Blinking cursor animation ───────────────────────────────── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* ── Pixel walking animation ─────────────────────────────────── */
+@keyframes pixel-walk {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.pixel-walk {
+  animation: pixel-walk 0.6s steps(2) infinite;
+}
+
+/* ── Pixel float ─────────────────────────────────────────────── */
+@keyframes pixel-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.pixel-float {
+  animation: pixel-float 2s steps(4) infinite;
+}
+
+/* ── Scrolling star background ───────────────────────────────── */
+@keyframes pixel-scroll {
+  from { background-position: 0 0; }
+  to { background-position: -256px 256px; }
+}
+
+/* ── Glitch text ─────────────────────────────────────────────── */
+@keyframes glitch {
+  0% { text-shadow: 2px 2px var(--pixel-pink), -2px -2px var(--pixel-cyan); }
+  25% { text-shadow: -2px 2px var(--pixel-cyan), 2px -2px var(--pixel-pink); }
+  50% { text-shadow: 2px -2px var(--pixel-yellow), -2px 2px var(--pixel-purple); }
+  75% { text-shadow: -2px -2px var(--pixel-pink), 2px 2px var(--pixel-cyan); }
+  100% { text-shadow: 2px 2px var(--pixel-pink), -2px -2px var(--pixel-cyan); }
+}
+
+.glitch {
+  animation: glitch 3s steps(1) infinite;
+}
+
+/* ── Pixel progress bar ──────────────────────────────────────── */
+.pixel-progress {
+  height: 16px;
+  background: var(--pixel-black);
+  border: 3px solid var(--pixel-cyan);
+  box-shadow: 2px 2px 0 0 var(--pixel-cyan);
+  overflow: hidden;
+}
+
+.pixel-progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--pixel-cyan) 0px,
+    var(--pixel-cyan) 10px,
+    rgba(0,255,245,0.5) 10px,
+    rgba(0,255,245,0.5) 12px
+  );
+  transition: width 0.3s steps(8);
+}
+
+/* ── Pixel badge ─────────────────────────────────────────────── */
+.pixel-badge {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  padding: 4px 8px;
+  background: var(--pixel-black);
+  border: 2px solid var(--pixel-cyan);
+  color: var(--pixel-cyan);
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+/* ── Screen flicker on load ──────────────────────────────────── */
+@keyframes screen-on {
+  0% { opacity: 0; filter: brightness(0); }
+  20% { opacity: 0.8; filter: brightness(2); }
+  40% { opacity: 0.2; filter: brightness(0); }
+  60% { opacity: 1; filter: brightness(1.5); }
+  100% { opacity: 1; filter: brightness(1); }
+}
+
+.screen-on {
+  animation: screen-on 0.6s steps(3) forwards;
+}
+
+/* ── Diagonal stripe pattern ─────────────────────────────────── */
+.pixel-stripe {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 4px,
+    rgba(0,255,245,0.06) 4px,
+    rgba(0,255,245,0.06) 8px
+  );
+}
+
+/* ── Selection color ─────────────────────────────────────────── */
+::selection {
+  background: var(--pixel-cyan);
+  color: var(--pixel-black);
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--pixel-black);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--pixel-cyan);
+  border: 2px solid var(--pixel-black);
+}/* ── Leaflet Base Styles ── */
+@import "leaflet/dist/leaflet.css";
+
+/* ── Custom Pixel Map Styles ── */
+.pixel-map-container {
+  border: 4px solid var(--pixel-cyan);
+  box-shadow: 8px 8px 0 0 rgba(0, 255, 245, 0.2);
+  background: var(--pixel-black);
+}
+
+/* Colorize the dark tiles to look like a glowing cyan/green radar screen */
+.retro-tiles {
+  filter: sepia(1) hue-rotate(130deg) saturate(300%) brightness(0.9) contrast(1.2);
+  image-rendering: pixelated;
+}
+
+/* Animation for the Companion Marker */
+@keyframes hop {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.companion-marker {
+  font-size: 32px;
+  line-height: 1;
+  text-shadow: 2px 2px 0 var(--pixel-black);
+  animation: hop 1s infinite;
+  margin-left: -16px;
+  margin-top: -16px;
+}
+
+/* ── Overriding Leaflet's Default Styles for an 8-Bit Look ── */
+
+/* Make the popup boxes dark, square, and neon-bordered */
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background: var(--pixel-black) !important;
+  border: 3px solid var(--pixel-cyan) !important;
+  color: var(--pixel-white) !important;
+  border-radius: 0 !important;
+  box-shadow: 6px 6px 0 0 rgba(0, 255, 245, 0.3) !important;
+}
+
+/* Move the little triangle pointer to match */
+.leaflet-popup-tip {
+  border-top: none !important;
+  border-left: none !important;
+  width: 12px !important;
+  height: 12px !important;
+}
+
+/* Fix popup text font */
+.leaflet-popup-content {
+  font-family: 'VT323', monospace !important;
+  font-size: 18px !important;
+  margin: 12px !important;
+}
+
+/* Make the close 'X' button pink and retro */
+.leaflet-container a.leaflet-popup-close-button {
+  color: var(--pixel-pink) !important;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 12px !important;
+  padding-top: 4px !important;
+}
+.leaflet-container a.leaflet-popup-close-button:hover {
+  color: var(--pixel-white) !important;
+}
+
+/* Hide the white bottom-right attribution bar to keep it looking like a game */
+.leaflet-control-attribution {
+  display: none !important;
+}

@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { AlertTriangle, CheckCircle, Zap, TrendingUp } from 'lucide-react';
 import { apiService } from '../service/api';
 
 export default function ScamChecker() {
@@ -10,159 +8,148 @@ export default function ScamChecker() {
   const [itemName, setItemName] = useState('');
   const [quotedPrice, setQuotedPrice] = useState('');
   const [loading, setLoading] = useState(false);
+  const [reportSubmitting, setReportSubmitting] = useState(false); // NEW STATE
   const [result, setResult] = useState(null);
 
   const categories = ['Transport', 'Food', 'Souvenir'];
 
-  // ── Handle form submission ───────────────────────────────────────────
   const handleVerifyPrice = async (e) => {
     e.preventDefault();
-
-    // Validation
-    if (!itemName.trim()) {
-      toast.error('Please enter an item name');
-      return;
-    }
-
-    if (!quotedPrice || parseFloat(quotedPrice) <= 0) {
-      toast.error('Please enter a valid price');
-      return;
-    }
+    if (!itemName.trim()) { toast.error('Enter item name!'); return; }
+    if (!quotedPrice || parseFloat(quotedPrice) <= 0) { toast.error('Enter valid price!'); return; }
 
     try {
       setLoading(true);
-      const response = await apiService.checkPrice(
-        city,
-        category,
-        itemName,
-        parseFloat(quotedPrice)
-      );
-
+      const response = await apiService.checkPrice(city, category, itemName, parseFloat(quotedPrice));
       setResult(response);
-      console.log('Price check result:', response);
     } catch (error) {
-      console.error('Price verification failed:', error);
-      toast.error(error.message || 'Failed to verify price. Try again.');
+      toast.error(error.message || 'Failed to verify price.');
     } finally {
       setLoading(false);
     }
   };
 
-  // ── Determine verdict styling ────────────────────────────────────────
-  const getVerdictStyle = () => {
-    if (!result) return {};
-
-    const verdict = result.verdict;
-
-    if (verdict === 'SCAM_ALERT') {
-      return {
-        borderColor: 'rgb(244, 63, 94)',
-        glowColor: 'rgba(244, 63, 94, 0.3)',
-        bgGradient: 'from-rose-500/10 via-red-500/10 to-rose-500/10',
-        icon: AlertTriangle,
-        iconColor: 'text-rose-400',
-        title: '🚨 SCAM ALERT!',
-        titleColor: 'text-rose-300',
-        pulse: true,
-      };
+  // ── NEW: Handle User Price Reports ──
+  const handleReportPrice = async () => {
+    try {
+      setReportSubmitting(true);
+      // Hardcoding userId 1 for MVP demo
+      const message = await apiService.reportPrice(1, city, category, itemName, parseFloat(quotedPrice));
+      toast.success(message || 'Report submitted! 📊');
+    } catch (error) {
+      toast.error('Failed to submit report. Please try again.');
+    } finally {
+      setReportSubmitting(false);
     }
-
-    if (verdict === 'FAIR_PRICE') {
-      return {
-        borderColor: 'rgb(16, 185, 129)',
-        glowColor: 'rgba(16, 185, 129, 0.3)',
-        bgGradient: 'from-emerald-500/10 via-green-500/10 to-emerald-500/10',
-        icon: CheckCircle,
-        iconColor: 'text-emerald-400',
-        title: '✅ Fair Price',
-        titleColor: 'text-emerald-300',
-        pulse: false,
-      };
-    }
-
-    if (verdict === 'GREAT_DEAL') {
-      return {
-        borderColor: 'rgb(34, 197, 94)',
-        glowColor: 'rgba(34, 197, 94, 0.3)',
-        bgGradient: 'from-green-500/10 via-emerald-500/10 to-teal-500/10',
-        icon: TrendingUp,
-        iconColor: 'text-green-400',
-        title: '🎉 Great Deal!',
-        titleColor: 'text-green-300',
-        pulse: false,
-      };
-    }
-
-    return {};
   };
 
-  const verdictStyle = getVerdictStyle();
-  const VerdictIcon = verdictStyle.icon;
+  const getVerdictConfig = () => {
+    if (!result) return null;
+    const v = result.verdict;
+    if (v === 'SCAM_ALERT') return {
+      color: 'var(--pixel-pink)', shadow: '#990040',
+      title: '!! SCAM ALERT !!', icon: '🚨', pulse: true,
+    };
+    if (v === 'FAIR_PRICE') return {
+      color: 'var(--pixel-green)', shadow: '#1a6b0a',
+      title: '>> FAIR PRICE <<', icon: '✅', pulse: false,
+    };
+    if (v === 'GREAT_DEAL') return {
+      color: 'var(--pixel-yellow)', shadow: '#9a8900',
+      title: '** GREAT DEAL **', icon: '🎉', pulse: false,
+    };
+    return null;
+  };
+
+  const verdict = getVerdictConfig();
 
   return (
-    <section className="relative py-20 px-6">
-      <div className="max-w-2xl mx-auto">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-4xl font-bold mb-3">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-              Scam Detector
-            </span>
-          </h2>
-          <p className="text-slate-300">
-            Verify prices and detect potential scams in real-time
-          </p>
-        </motion.div>
+    <section style={{ padding: '80px 24px', position: 'relative' }}>
+      <div style={{ maxWidth: 640, margin: '0 auto' }}>
 
-        {/* Input Panel */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          whileInView={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="backdrop-blur-xl bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 border border-cyan-400/30 rounded-2xl p-8 shadow-2xl"
-        >
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-8 pb-6 border-b border-cyan-400/20">
-            <Zap className="text-cyan-400" size={28} />
-            <h3 className="text-2xl font-bold text-white">Quick Price Check</h3>
+        {/* ── Section Header ──────────────────────────────────────────── */}
+        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 24,
+          }}>
+            <div style={{ height: 3, width: 60, background: 'var(--pixel-pink)' }} />
+            <span style={{ fontSize: 8, fontFamily: "'Press Start 2P'", color: 'var(--pixel-pink)' }}>
+              🛡️ SCAM DETECTOR 🛡️
+            </span>
+            <div style={{ height: 3, width: 60, background: 'var(--pixel-pink)' }} />
+          </div>
+          <h2 style={{
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: 'clamp(16px, 2.5vw, 26px)',
+            color: 'var(--pixel-white)',
+            margin: '0 0 12px',
+            textShadow: '4px 4px 0 var(--pixel-blue)',
+          }}>
+            PRICE CHECKER
+          </h2>
+          <p style={{
+            fontFamily: "'VT323', monospace",
+            fontSize: 20,
+            color: 'var(--pixel-grey)',
+          }}>
+            Verify prices and detect scams in real-time
+          </p>
+        </div>
+
+        {/* ── Input Panel ─────────────────────────────────────────────── */}
+        <div style={{
+          background: 'var(--pixel-navy)',
+          border: '4px solid var(--pixel-cyan)',
+          boxShadow: '8px 8px 0 0 rgba(0,255,245,0.4)',
+          position: 'relative',
+        }}>
+          {/* Title bar */}
+          <div style={{
+            background: 'var(--pixel-cyan)',
+            padding: '8px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+          }}>
+            <span style={{ fontSize: 14 }}>⚡</span>
+            <span style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: 9,
+              color: 'var(--pixel-black)',
+            }}>QUICK PRICE CHECK</span>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleVerifyPrice} className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {/* City Input */}
+          {/* Inner border */}
+          <div style={{
+            position: 'absolute', left: 4, right: 4, bottom: 4,
+            top: 36,
+            border: '2px solid rgba(0,255,245,0.15)',
+            pointerEvents: 'none',
+          }} />
+
+          <form onSubmit={handleVerifyPrice} style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              {/* City */}
               <div>
-                <label className="block text-sm font-semibold text-slate-300 mb-3 uppercase tracking-wider">
-                  City
-                </label>
+                <label className="pixel-label">CITY</label>
                 <input
                   type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="e.g., Kolkata"
-                  className="w-full px-4 py-3 bg-slate-800/60 border border-cyan-400/30 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400/60 focus:bg-slate-800/80 transition-all duration-200"
+                  className="pixel-input"
                 />
               </div>
-
-              {/* Category Dropdown */}
+              {/* Category */}
               <div>
-                <label className="block text-sm font-semibold text-slate-300 mb-3 uppercase tracking-wider">
-                  Category
-                </label>
+                <label className="pixel-label">CATEGORY</label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-800/60 border border-cyan-400/30 rounded-lg text-white focus:outline-none focus:border-cyan-400/60 focus:bg-slate-800/80 transition-all duration-200 appearance-none cursor-pointer"
+                  className="pixel-select"
                 >
                   {categories.map((cat) => (
-                    <option key={cat} value={cat} className="bg-slate-900">
+                    <option key={cat} value={cat} style={{ background: 'var(--pixel-black)' }}>
                       {cat}
                     </option>
                   ))}
@@ -170,27 +157,21 @@ export default function ScamChecker() {
               </div>
             </div>
 
-            {/* Item Name & Price Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               {/* Item Name */}
               <div>
-                <label className="block text-sm font-semibold text-slate-300 mb-3 uppercase tracking-wider">
-                  Item Name
-                </label>
+                <label className="pixel-label">ITEM NAME</label>
                 <input
                   type="text"
                   value={itemName}
                   onChange={(e) => setItemName(e.target.value)}
                   placeholder="e.g., Masala Chai"
-                  className="w-full px-4 py-3 bg-slate-800/60 border border-cyan-400/30 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400/60 focus:bg-slate-800/80 transition-all duration-200"
+                  className="pixel-input"
                 />
               </div>
-
               {/* Quoted Price */}
               <div>
-                <label className="block text-sm font-semibold text-slate-300 mb-3 uppercase tracking-wider">
-                  Quoted Price (₹)
-                </label>
+                <label className="pixel-label">PRICE (₹)</label>
                 <input
                   type="number"
                   value={quotedPrice}
@@ -198,111 +179,156 @@ export default function ScamChecker() {
                   placeholder="e.g., 50"
                   step="0.01"
                   min="0"
-                  className="w-full px-4 py-3 bg-slate-800/60 border border-cyan-400/30 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400/60 focus:bg-slate-800/80 transition-all duration-200"
+                  className="pixel-input"
                 />
               </div>
             </div>
 
-            {/* Submit Button */}
-            <motion.button
+            {/* Submit */}
+            <button
               type="submit"
               disabled={loading}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold rounded-lg transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="pixel-btn pixel-btn-yellow"
+              style={{
+                width: '100%',
+                justifyContent: 'center',
+                fontSize: 11,
+                padding: '14px 24px',
+                opacity: loading ? 0.6 : 1,
+                cursor: loading ? 'wait' : 'pointer',
+              }}
             >
               {loading ? (
                 <>
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                  >
-                    <Zap size={20} />
-                  </motion.div>
-                  Verifying...
+                  <span className="blink">⚡</span> VERIFYING...
                 </>
               ) : (
-                <>
-                  <Zap size={20} />
-                  Verify Price
-                </>
+                <>⚡ VERIFY PRICE</>
               )}
-            </motion.button>
+            </button>
           </form>
-        </motion.div>
+        </div>
 
-        {/* Result Panel */}
-        <AnimatePresence>
-          {result && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, height: 0 }}
-              animate={{ opacity: 1, y: 0, height: 'auto' }}
-              exit={{ opacity: 0, y: -10, height: 0 }}
-              transition={{ duration: 0.4 }}
-              className="mt-6"
-            >
-              <motion.div
-                animate={
-                  verdictStyle.pulse
-                    ? {
-                        boxShadow: [
-                          `0 0 20px ${verdictStyle.glowColor}`,
-                          `0 0 40px ${verdictStyle.glowColor}`,
-                          `0 0 20px ${verdictStyle.glowColor}`,
-                        ],
-                      }
-                    : {}
-                }
-                transition={
-                  verdictStyle.pulse
-                    ? { duration: 1.5, repeat: Infinity }
-                    : {}
-                }
-                style={{
-                  borderColor: verdictStyle.borderColor,
-                }}
-                className={`backdrop-blur-xl bg-gradient-to-br ${verdictStyle.bgGradient} border-2 rounded-2xl p-8 shadow-2xl`}
-              >
-                {/* Result Header */}
-                <div className="flex items-start gap-4 mb-6">
-                  <VerdictIcon className={`${verdictStyle.iconColor} flex-shrink-0`} size={32} />
-                  <div>
-                    <h4 className={`text-2xl font-bold ${verdictStyle.titleColor} mb-2`}>
-                      {verdictStyle.title}
-                    </h4>
+        {/* ── Result Panel ────────────────────────────────────────────── */}
+        {result && verdict && (
+          <div style={{
+            marginTop: 24,
+            background: 'var(--pixel-navy)',
+            border: `4px solid ${verdict.color}`,
+            boxShadow: `8px 8px 0 0 ${verdict.shadow}`,
+            animation: verdict.pulse ? 'blink 1.5s step-end infinite' : 'none',
+          }}>
+            {/* Result header */}
+            <div style={{
+              background: verdict.color,
+              padding: '10px 16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+            }}>
+              <span style={{ fontSize: 18 }}>{verdict.icon}</span>
+              <span style={{
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: 10,
+                color: 'var(--pixel-black)',
+                letterSpacing: 2,
+              }}>
+                {verdict.title}
+              </span>
+            </div>
+
+            <div style={{ padding: 24 }}>
+              {/* Message */}
+              <p style={{
+                fontFamily: "'VT323', monospace",
+                fontSize: 20,
+                color: 'var(--pixel-white)',
+                lineHeight: 1.6,
+                marginBottom: 20,
+                borderBottom: `2px solid ${verdict.color}30`,
+                paddingBottom: 16,
+              }}>
+                {result.message}
+              </p>
+
+              {/* Stats grid */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: 12,
+                marginBottom: 24, // Added margin for spacing
+              }}>
+                {[
+                  { label: 'ITEM', val: itemName },
+                  { label: 'YOUR PRICE', val: `₹${quotedPrice}` },
+                  { label: 'CATEGORY', val: category },
+                ].map(({ label, val }) => (
+                  <div key={label} style={{
+                    background: 'var(--pixel-black)',
+                    border: `2px solid ${verdict.color}`,
+                    padding: 10,
+                  }}>
+                    <div style={{
+                      fontFamily: "'Press Start 2P', monospace",
+                      fontSize: 7,
+                      color: 'var(--pixel-grey)',
+                      marginBottom: 4,
+                    }}>{label}</div>
+                    <div style={{
+                      fontFamily: "'VT323', monospace",
+                      fontSize: 18,
+                      color: verdict.color,
+                    }}>{val}</div>
                   </div>
+                ))}
+              </div>
+
+              {/* ── NEW: CROWDSOURCING SUBMIT BUTTON ── */}
+              {/* Only show if the item was found in the database */}
+              {result.itemFound !== false && (
+                <div style={{
+                  background: 'rgba(0,0,0,0.3)',
+                  borderTop: `2px dashed ${verdict.color}50`,
+                  paddingTop: 16,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 16,
+                  flexWrap: 'wrap'
+                }}>
+                  <p style={{
+                    fontFamily: "'VT323', monospace",
+                    fontSize: 16,
+                    color: 'var(--pixel-grey)',
+                    margin: 0,
+                    flex: 1
+                  }}>
+                    Did you actually pay this amount? Help keep our community database accurate!
+                  </p>
+                  <button
+                    onClick={handleReportPrice}
+                    disabled={reportSubmitting}
+                    className="pixel-btn"
+                    style={{
+                      background: 'var(--pixel-black)',
+                      color: verdict.color,
+                      border: `2px solid ${verdict.color}`,
+                      borderBottom: `4px solid ${verdict.color}`,
+                      borderRight: `4px solid ${verdict.color}`,
+                      fontSize: 9,
+                      opacity: reportSubmitting ? 0.6 : 1,
+                      cursor: reportSubmitting ? 'wait' : 'pointer',
+                    }}
+                  >
+                    {reportSubmitting ? 'SUBMITTING...' : '📢 REPORT AS ACTUAL'}
+                  </button>
                 </div>
+              )}
 
-                {/* Result Message */}
-                <p className="text-slate-200 leading-relaxed mb-6">
-                  {result.message}
-                </p>
+            </div>
+          </div>
+        )}
 
-                {/* Result Details Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-6 border-t border-white/10">
-                  <div>
-                    <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">
-                      Item
-                    </p>
-                    <p className="text-white font-semibold">{itemName}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">
-                      Your Price
-                    </p>
-                    <p className="text-white font-semibold">₹{quotedPrice}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">
-                      Category
-                    </p>
-                    <p className="text-white font-semibold">{category}</p>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </section>
   );

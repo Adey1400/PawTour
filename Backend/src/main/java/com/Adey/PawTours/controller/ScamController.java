@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.Adey.PawTours.DTO.PriceCheckRequest;
 import com.Adey.PawTours.DTO.PriceCheckResponse;
+import com.Adey.PawTours.DTO.PriceReportRequest;
+import com.Adey.PawTours.Service.PriceReportService;
 import com.Adey.PawTours.Service.ScamProtectionService;
 
 @Slf4j
@@ -16,7 +18,7 @@ import com.Adey.PawTours.Service.ScamProtectionService;
 public class ScamController {
 
     private final ScamProtectionService scamProtectionService;
-
+    private final PriceReportService priceReportService;
     // ── POST /api/scam/check ─────────────────────────────────────────────────
     // Primary price-check endpoint. Accepts a city, category, item, and the
     // price the traveller was quoted. Returns a verdict + message.
@@ -54,5 +56,13 @@ public class ScamController {
                 city, category, itemName, userPrice);
 
         return ResponseEntity.ok(response);
+    }
+    @PostMapping("/report")
+    public ResponseEntity<String> reportActualPrice(@RequestBody PriceReportRequest request) {
+        log.info("Receiving price report from user {} for {} in {}", 
+                request.getUserId(), request.getItemName(), request.getCity());
+        
+        String responseMessage = priceReportService.submitReport(request);
+        return ResponseEntity.ok(responseMessage);
     }
 }

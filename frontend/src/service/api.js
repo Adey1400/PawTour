@@ -46,18 +46,6 @@ apiClient.interceptors.response.use(
 
 // ── 2. Fallback shapes (keeps the UI renderable on error) ────────────────────
 
-const QUEST_FALLBACK = [];
-
-const CLUE_FALLBACK = {
-  found:   false,
-  message: "Could not load clue. Please try again.",
-};
-
-const VERIFY_FALLBACK = {
-  success: false,
-  message: "Verification failed. Please try again.",
-};
-
 const PRICE_FALLBACK = {
   itemFound: false,
   isScam:    false,
@@ -68,64 +56,6 @@ const PRICE_FALLBACK = {
 // ── 3. apiService ────────────────────────────────────────────────────────────
 
 export const apiService = {
-
-  /**
-   * Fetch every available quest for the explore / home screen.
-   * GET /quests
-   * @returns {Promise<Quest[]>}
-   */
-  async getAllQuests() {
-    try {
-      const { data } = await apiClient.get("/quests");
-      return data;
-    } catch (error) {
-      console.error("[getAllQuests] Failed:", error.readableMessage);
-      return QUEST_FALLBACK; // safe empty list — UI can show "no quests found"
-    }
-  },
-
-  /**
-   * Fetch the riddle/clue for a specific step in a quest.
-   * GET /quests/:questId/clue?step=:step
-   * @param {number} questId
-   * @param {number} step      — 1-based sequence order
-   * @returns {Promise<Clue>}
-   */
-  async getCurrentClue(questId, step) {
-    try {
-      const { data } = await apiClient.get(`/quests/${questId}/clue`, {
-        params: { step },
-      });
-      return data;
-    } catch (error) {
-      console.error("[getCurrentClue] Failed:", error.readableMessage);
-      return CLUE_FALLBACK;
-    }
-  },
-
-  /**
-   * Verify the traveller has physically reached the correct location.
-   * POST /quests/verify
-   * userId is hardcoded to 1 for the MVP.
-   * @param {number} questId
-   * @param {number} sequenceOrder
-   * @returns {Promise<VerifyResponse>}
-   */
-  async verifyLocation(questId, sequenceOrder) {
-    try {
-      const { data } = await apiClient.post("/quests/verify", {
-        userId: 1, // MVP hardcode — swap for auth context later
-        questId,
-        sequenceOrder,
-      });
-      return data;
-    } catch (error) {
-      // Verification errors are critical — rethrow with a readable message
-      // so the calling component can show a specific failure state
-      const readable = error.readableMessage ?? "Location verification failed.";
-      throw new Error(readable);
-    }
-  },
 
   /**
    * Check whether a quoted price is fair, a scam, or a great deal.
@@ -150,4 +80,170 @@ export const apiService = {
       return PRICE_FALLBACK; // safe fallback — never crash the scam checker mid-trip
     }
   },
+
+  // ── 4. Discovery & Exploration ──────────────────────────────────────────
+
+  /**
+   * Get accommodations in a city by type.
+   * GET /discovery/accommodations?city=Kolkata&type=HOTEL
+   * @param {string} city
+   * @param {string} type - HOTEL, OTA, OYO, ECO_SHACK, GUESTHOUSE
+   * @returns {Promise<AccommodationDTO[]>}
+   */
+  async getAccommodations(city, type) {
+    try {
+      const { data } = await apiClient.get("/discovery/accommodations", {
+        params: { city, type }
+      });
+      console.debug("[getAccommodations] Fetched accommodations:", data);
+      return data;
+    } catch (error) {
+      console.error("[getAccommodations] Failed:", error.readableMessage);
+      return [];
+    }
+  },
+
+  /**
+   * Find accommodations near user's current location.
+   * GET /discovery/accommodations/nearby?latitude=22.5&longitude=88.3&radiusKm=2
+   * @param {number} latitude
+   * @param {number} longitude
+   * @param {number} radiusKm
+   * @returns {Promise<AccommodationDTO[]>}
+   */
+  async getNearbyAccommodations(latitude, longitude, radiusKm = 2.0) {
+    try {
+      const { data } = await apiClient.get("/discovery/accommodations/nearby", {
+        params: { latitude, longitude, radiusKm }
+      });
+      console.debug("[getNearbyAccommodations] Found nearby places:", data);
+      return data;
+    } catch (error) {
+      console.error("[getNearbyAccommodations] Failed:", error.readableMessage);
+      return [];
+    }
+  },
+
+  /**
+   * Get vendors (restaurants, shops, artisans, guides) in a city.
+   * GET /discovery/vendors?city=Kolkata&type=RESTAURANT
+   * @param {string} city
+   * @param {string} type - RESTAURANT, CAFE, SHOP, ARTISAN, LOCAL_GUIDE, TRANSPORT
+   * @returns {Promise<VendorDTO[]>}
+   */
+  async getVendors(city, type) {
+    try {
+      const { data } = await apiClient.get("/discovery/vendors", {
+        params: { city, type }
+      });
+      console.debug("[getVendors] Fetched vendors:", data);
+      return data;
+    } catch (error) {
+      console.error("[getVendors] Failed:", error.readableMessage);
+      return [];
+    }
+  },
+
+  /**
+   * Find restaurants by cuisine type.
+   * GET /discovery/restaurants?city=Kolkata&cuisine=Bengali
+   * @param {string} city
+   * @param {string} cuisine
+   * @returns {Promise<VendorDTO[]>}
+   */
+  async getRestaurantsByCuisine(city, cuisine) {
+    try {
+      const { data } = await apiClient.get("/discovery/restaurants", {
+        params: { city, cuisine }
+      });
+      console.debug("[getRestaurantsByCuisine] Fetched restaurants:", data);
+      return data;
+    } catch (error) {
+      console.error("[getRestaurantsByCuisine] Failed:", error.readableMessage);
+      return [];
+    }
+  },
+
+  /**
+   * Get top-rated vendors across all cities.
+   * GET /discovery/top-rated?minRating=4.0
+   * @param {number} minRating
+   * @returns {Promise<VendorDTO[]>}
+   */
+  async getTopRatedVendors(minRating = 4.0) {
+    try {
+      const { data } = await apiClient.get("/discovery/top-rated", {
+        params: { minRating }
+      });
+      console.debug("[getTopRatedVendors] Fetched top vendors:", data);
+      return data;
+    } catch (error) {
+      console.error("[getTopRatedVendors] Failed:", error.readableMessage);
+      return [];
+    }
+
+    
+  },
+
+  // ── 5. Backpack / Saved Items ─────────────────────────────────────────
+
+  /**
+   * Save an item to the user's backpack
+   */
+  async addToBackpack(userId, itemType, itemId, notes = "") {
+    try {
+      const { data } = await apiClient.post("/backpack/add", {
+        userId,
+        itemType,
+        itemId,
+        notes,
+      });
+      return data;
+    } catch (error) {
+      console.error("[addToBackpack] Failed:", error.readableMessage);
+      throw error; // Let the component handle the error toast
+    }
+  },
+
+  /**
+   * Get all items saved in a user's backpack
+   */
+  async getBackpack(userId) {
+    try {
+      const { data } = await apiClient.get(`/backpack/${userId}`);
+      console.debug("[getBackpack] Fetched backpack:", data);
+      return data;
+    } catch (error) {
+      console.error("[getBackpack] Failed:", error.readableMessage);
+      return [];
+    }
+  },
+
+  /**
+   * Remove an item from the backpack
+   */
+  async removeFromBackpack(backpackItemId) {
+    try {
+      await apiClient.delete(`/backpack/remove/${backpackItemId}`);
+    } catch (error) {
+      console.error("[removeFromBackpack] Failed:", error.readableMessage);
+      throw error;
+    }
+  },
+  async reportPrice(userId, city, category, itemName, reportedPrice) {
+    try {
+      const { data } = await apiClient.post("/scam/report", {
+        userId,
+        city,
+        category,
+        itemName,
+        reportedPrice
+      });
+      return data; // Returns the success string from the backend
+    } catch (error) {
+      console.error("[reportPrice] Failed:", error.readableMessage);
+      throw error;
+    }
+  }
 };
+

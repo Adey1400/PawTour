@@ -1,121 +1,192 @@
-import { motion } from 'framer-motion';
-import { Heart } from 'lucide-react';
-
 const companions = [
   {
-    name: 'Buddy',
-    breed: 'Golden Retriever',
-    role: 'Adventure Guide',
-    color: 'from-amber-400 to-orange-500',
+    name: 'BUDDY',
+    breed: 'DISCOVERY GUIDE',
+    role: 'LOCAL EXPLORER',
     icon: '🐕',
+    color: 'var(--pixel-yellow)',
+    shadow: '#9a8900',
+    tip: 'Helps you uncover hidden local gems, authentic cafes, and unique places locals love.',
   },
   {
-    name: 'Whiskers',
-    breed: 'Tabby Cat',
-    role: 'Scam Detector',
-    color: 'from-purple-400 to-pink-500',
+    name: 'WHISKERS',
+    breed: 'SECURITY EXPERT',
+    role: 'SCAM DETECTOR',
     icon: '🐱',
+    color: 'var(--pixel-pink)',
+    shadow: '#990040',
+    tip: 'Analyzes prices and provides real-time alerts to keep you safe from tourist scams.',
   },
 ];
 
+function CompanionCard({ companion }) {
+  return (
+    <div
+      style={{
+        background: 'var(--pixel-navy)',
+        border: `4px solid ${companion.color}`,
+        boxShadow: `10px 10px 0 0 ${companion.shadow}`,
+        padding: 0,
+        width: 280,
+        cursor: 'pointer',
+        transition: 'transform 0.1s',
+        position: 'relative',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'translate(-4px, -4px)';
+        e.currentTarget.style.boxShadow = `14px 14px 0 0 ${companion.shadow}`;
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = 'translate(0, 0)';
+        e.currentTarget.style.boxShadow = `10px 10px 0 0 ${companion.shadow}`;
+      }}
+    >
+      {/* Card header */}
+      <div style={{
+        background: companion.color,
+        padding: '12px 16px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 8,
+      }}>
+        <span style={{
+          fontFamily: "'Press Start 2P', monospace",
+          fontSize: 10,
+          color: 'var(--pixel-black)',
+          textAlign: 'center',
+        }}>
+          {companion.role}
+        </span>
+      </div>
+
+      {/* Character display */}
+      <div style={{
+        background: '#0a0a1a',
+        padding: '32px 24px',
+        textAlign: 'center',
+        borderBottom: `3px solid ${companion.color}`,
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        {/* Grid pattern */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
+          backgroundSize: '16px 16px',
+        }} />
+
+        {/* Character sprite */}
+        <div className="pixel-float" style={{ fontSize: 72, lineHeight: 1, marginBottom: 16 }}>
+          {companion.icon}
+        </div>
+      </div>
+
+      {/* Character info */}
+      <div style={{ padding: '20px 20px' }}>
+        <h3 style={{
+          fontFamily: "'Press Start 2P', monospace",
+          fontSize: 16,
+          color: companion.color,
+          margin: '0 0 4px',
+          textShadow: `2px 2px 0 ${companion.shadow}`,
+        }}>
+          {companion.name}
+        </h3>
+        <p style={{
+          fontFamily: "'VT323', monospace",
+          fontSize: 16,
+          color: 'var(--pixel-grey)',
+          margin: '0 0 16px',
+          letterSpacing: 1,
+        }}>
+          {companion.breed}
+        </p>
+
+        {/* Tip */}
+        <p style={{
+          fontFamily: "'VT323', monospace",
+          fontSize: 15,
+          color: 'var(--pixel-grey)',
+          lineHeight: 1.5,
+          margin: 0,
+          padding: '12px',
+          background: 'rgba(0, 255, 245, 0.1)',
+          border: `2px solid ${companion.color}40`,
+          borderRadius: 2,
+        }}>
+          {companion.tip}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function CompanionTeaser() {
   return (
-    <section className="relative py-20 px-6 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-5xl font-bold mb-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-              Meet Your Companions
-            </span>
-          </h2>
-          <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-            Two adorable pets ready to help you navigate the city
-          </p>
-        </motion.div>
+    <section style={{ padding: '80px 24px', position: 'relative' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
 
-        {/* Companions Grid */}
-        <div className="relative flex justify-center items-center gap-8 lg:gap-16 flex-wrap">
-          
-          {/* Background glowing orb */}
-          <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
-            <div className="w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl -z-10"></div>
+        {/* ── Section Header ──────────────────────────────────────────────── */}
+        <div style={{ textAlign: 'center', marginBottom: 64 }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 24,
+          }}>
+            <div style={{ height: 3, width: 60, background: 'var(--pixel-pink)' }} />
+            <span style={{ fontSize: 8, fontFamily: "'Press Start 2P'", color: 'var(--pixel-pink)' }}>
+          ★ AI GUIDES ★
+            </span>
+            <div style={{ height: 3, width: 60, background: 'var(--pixel-pink)' }} />
           </div>
 
-          {/* Companion Cards */}
+          <h2 style={{
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: 'clamp(18px, 3vw, 32px)',
+            color: 'var(--pixel-white)',
+            margin: '0 0 16px',
+            textShadow: '4px 4px 0 var(--pixel-blue)',
+          }}>
+            CHOOSE YOUR COMPANION
+          </h2>
+          <p style={{
+            fontFamily: "'VT323', monospace",
+            fontSize: 22,
+            color: 'var(--pixel-grey)',
+            maxWidth: 480,
+            margin: '0 auto',
+            lineHeight: 1.5,
+          }}>
+            Meet your AI-powered travel companions
+          </p>
+        </div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gap: 32,
+        }}>
           {companions.map((companion, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: idx * 0.2 }}
-              viewport={{ once: true }}
-              whileHover={{
-                rotateX: 5,
-                rotateY: 10,
-                z: 20,
-              }}
-              className="h-96 w-72"
-              style={{ perspective: '1000px' }}
-            >
-              {/* 3D Card Container */}
-              <motion.div
-                className="relative w-full h-full"
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              >
-                {/* Card */}
-                <div className="absolute inset-0 backdrop-blur-xl bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/80 border border-cyan-400/40 rounded-2xl p-8 overflow-hidden shadow-2xl">
-                  
-                  {/* Background gradient */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${companion.color} opacity-10`}></div>
-
-                  {/* Content */}
-                  <div className="relative z-10 flex flex-col justify-between h-full">
-                    
-                    {/* Top Section */}
-                    <div className="text-center mb-8">
-                      <motion.div
-                        animate={{ y: [-5, 5, -5] }}
-                        transition={{ duration: 3, repeat: Infinity }}
-                        className="text-8xl mb-4"
-                      >
-                        {companion.icon}
-                      </motion.div>
-                      <h3 className="text-3xl font-bold text-white mb-1">
-                        {companion.name}
-                      </h3>
-                      <p className="text-sm text-cyan-400 font-semibold uppercase tracking-wider">
-                        {companion.breed}
-                      </p>
-                    </div>
-
-                    {/* Middle Section */}
-                    <div className="flex-1 flex items-center justify-center">
-                      <p className="text-slate-300 text-center">
-                        {companion.role}
-                      </p>
-                    </div>
-
-                    {/* Bottom Section */}
-                    <div className="flex items-center justify-center gap-2 text-cyan-400">
-                      <Heart size={20} fill="currentColor" />
-                      <span className="font-semibold">Ready to Explore</span>
-                    </div>
-                  </div>
-
-                  {/* Border shine effect */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500/0 via-cyan-500/20 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-              </motion.div>
-            </motion.div>
+            <CompanionCard key={idx} companion={companion} />
           ))}
         </div>
+
+        {/* ── Bottom decoration ─────────────────────────────────────────────── */}
+        <div style={{
+          textAlign: 'center',
+          marginTop: 48,
+          fontFamily: "'VT323', monospace",
+          fontSize: 18,
+          color: 'var(--pixel-grey)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 16,
+        }}>
+          <div style={{ height: 2, width: 80, background: 'var(--pixel-grey)' }} />
+          ★ MORE COMPANIONS COMING SOON ★
+          <div style={{ height: 2, width: 80, background: 'var(--pixel-grey)' }} />
+        </div>
+
       </div>
     </section>
   );
