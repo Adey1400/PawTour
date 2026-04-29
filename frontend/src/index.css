@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
+@import "leaflet/dist/leaflet.css";
 
 :root {
   --pixel-black: #0a0a0a;
@@ -14,6 +14,7 @@
   --pixel-purple: #9600ff;
   --pixel-white: #e8e8e8;
   --pixel-grey: #888888;
+  --pixel-lime: #7fff00;
   --pixel-border: 4px solid var(--pixel-cyan);
 }
 
@@ -64,6 +65,11 @@ body::before {
   transition: transform 0.05s;
 }
 
+.pixel-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #007a73;
+}
+
 .pixel-btn:hover {
   background: #00e5d9;
   transform: translate(-2px, -2px);
@@ -76,6 +82,16 @@ body::before {
   border-right-color: #9a8900;
 }
 
+.pixel-btn-yellow:hover {
+  background: #e6cf00;
+  box-shadow: 6px 6px 0 0 #9a8900;
+}
+
+.pixel-btn-yellow:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #9a8900;
+}
+
 .pixel-input {
   font-family: 'VT323', monospace;
   font-size: 18px;
@@ -84,6 +100,64 @@ body::before {
   color: var(--pixel-cyan);
   padding: 10px 14px;
   outline: none;
+  width: 100%;
+}
+
+.pixel-input:focus {
+  border-color: var(--pixel-yellow);
+  color: var(--pixel-yellow);
+}
+
+/* ── Select ── */
+.pixel-select {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  background: var(--pixel-black);
+  border: 3px solid var(--pixel-cyan);
+  color: var(--pixel-cyan);
+  padding: 10px 14px;
+  outline: none;
+  width: 100%;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0 L6 8 L12 0' fill='%2300fff5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+.pixel-select:focus {
+  border-color: var(--pixel-yellow);
+  color: var(--pixel-yellow);
+}
+
+/* ── Label ── */
+.pixel-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--pixel-grey);
+  display: block;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* ── Badge ── */
+.pixel-badge {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  border: 2px solid var(--pixel-cyan);
+  transition: transform 0.05s;
+}
+
+.pixel-badge:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 0 rgba(0,255,245,0.3);
+}
+
+.pixel-badge:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 /* ── Animations ── */
@@ -93,8 +167,57 @@ body::before {
 @keyframes pixel-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 .pixel-float { animation: pixel-float 2s steps(4) infinite; }
 
+@keyframes pixel-walk {
+  0%   { transform: translateX(0) scaleX(1); }
+  25%  { transform: translateX(40px) scaleX(1); }
+  50%  { transform: translateX(80px) scaleX(1); }
+  51%  { transform: translateX(80px) scaleX(-1); }
+  75%  { transform: translateX(40px) scaleX(-1); }
+  100% { transform: translateX(0) scaleX(-1); }
+}
+.pixel-walk { animation: pixel-walk 3s steps(8) infinite; }
+
+@keyframes screen-on {
+  0%   { opacity: 0; filter: brightness(30); }
+  5%   { opacity: 1; filter: brightness(2); }
+  10%  { filter: brightness(1); }
+  100% { filter: brightness(1); }
+}
+.screen-on {
+  animation: screen-on 0.6s steps(6) forwards;
+}
+
+/* ── Pixel Grid Background ── */
+.pixel-bg {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0,255,245,0.03) 0px,
+      rgba(0,255,245,0.03) 1px,
+      transparent 1px,
+      transparent 32px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,255,245,0.03) 0px,
+      rgba(0,255,245,0.03) 1px,
+      transparent 1px,
+      transparent 32px
+    );
+}
+
+/* ── Glitch Logo Effect ── */
+@keyframes glitch-shift {
+  0%, 100% { text-shadow: 2px 2px 0 var(--pixel-pink), -1px -1px 0 var(--pixel-purple); }
+  25%      { text-shadow: -2px 0 0 var(--pixel-pink), 2px 2px 0 var(--pixel-cyan); }
+  50%      { text-shadow: 2px -2px 0 var(--pixel-green), -2px 2px 0 var(--pixel-pink); }
+  75%      { text-shadow: -2px 2px 0 var(--pixel-cyan), 2px -1px 0 var(--pixel-purple); }
+}
+.glitch:hover {
+  animation: glitch-shift 0.3s steps(3) infinite;
+}
+
 /* ── Leaflet & Map Styling ── */
-@import "leaflet/dist/leaflet.css";
 
 .pixel-map-container {
   border: 4px solid var(--pixel-cyan);

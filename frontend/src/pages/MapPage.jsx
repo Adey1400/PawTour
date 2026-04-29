@@ -36,7 +36,7 @@ export default function MapPage() {
       }}>
         <h1 style={{
           fontFamily: "'Press Start 2P', monospace",
-          fontSize: '32px',
+          fontSize: 'clamp(12px, 2.5vw, 14px)',
           color: 'var(--pixel-cyan)',
           textShadow: '4px 4px 0 var(--pixel-pink), -2px -2px 0 var(--pixel-purple)',
           margin: 0,
@@ -47,10 +47,9 @@ export default function MapPage() {
         </h1>
         <p style={{
           fontFamily: "'VT323', monospace",
-          fontSize: '14px',
+          fontSize: '20px',
           color: 'var(--pixel-lime)',
           margin: '12px 0 0 0',
-          textShadow: '2px 2px 0 rgba(0,0,0,0.5)'
         }}>
           Discover amazing places for your furry friend!
         </p>
@@ -62,9 +61,8 @@ export default function MapPage() {
         margin: '0 auto',
         position: 'relative',
         zIndex: 10,
-        boxShadow: '0 0 30px rgba(0, 255, 245, 0.3), inset 0 0 20px rgba(0, 255, 245, 0.1)',
+        boxShadow: '8px 8px 0 0 rgba(0, 255, 245, 0.3)',
         border: '4px solid var(--pixel-cyan)',
-        borderRadius: '4px',
         overflow: 'hidden',
         background: 'var(--pixel-black)'
       }}>
@@ -72,13 +70,17 @@ export default function MapPage() {
           <div style={{
             height: '500px',
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            fontFamily: "'Press Start 2P', monospace",
-            color: 'var(--pixel-cyan)',
-            fontSize: '16px'
+            gap: '16px',
           }}>
-            🐕 Loading buddy's locations...
+            <div className="pixel-walk" style={{ fontSize: 40, display: 'inline-block' }}>🐕</div>
+            <span style={{
+              fontFamily: "'Press Start 2P', monospace",
+              color: 'var(--pixel-cyan)',
+              fontSize: '10px'
+            }}>LOADING<span className="blink">█</span></span>
           </div>
         ) : (
           <PixelMap items={items} />
@@ -92,12 +94,10 @@ export default function MapPage() {
         padding: '24px',
         background: 'rgba(0, 255, 245, 0.05)',
         border: '2px solid var(--pixel-cyan)',
-        borderRadius: '4px',
         fontFamily: "'VT323', monospace",
         color: 'var(--pixel-white)',
-        fontSize: '12px',
+        fontSize: '18px',
         lineHeight: '1.8',
-        textShadow: '1px 1px 0 rgba(0,0,0,0.5)'
       }}>
         <div style={{ marginBottom: '12px' }}>
           <strong style={{ color: 'var(--pixel-lime)' }}>🐕 BUDDY'S TIP:</strong> Click on any marker to see details about that location. Use your mouse wheel to zoom in and out!

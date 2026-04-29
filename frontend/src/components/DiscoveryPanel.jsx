@@ -162,12 +162,12 @@ export default function DiscoveryPanel() {
         {/* ── Loading ─────────────────────────────────────────────────── */}
         {loading && (
           <div style={{ textAlign: 'center', padding: '48px 0' }}>
-            <div className="blink" style={{ fontSize: 36, marginBottom: 12 }}>🔄</div>
+            <div className="pixel-walk" style={{ fontSize: 36, marginBottom: 16, display: 'inline-block' }}>🐕</div>
             <p style={{
               fontFamily: "'Press Start 2P', monospace",
               fontSize: 10,
-              color: 'var(--pixel-grey)',
-            }}>LOADING...</p>
+              color: 'var(--pixel-cyan)',
+            }}>LOADING<span className="blink">█</span></p>
           </div>
         )}
 
@@ -240,7 +240,24 @@ function DiscoveryCard({ item, index, type }) {
         position: 'relative',
         display: 'flex',         
         flexDirection: 'column', 
-        transition: 'transform 0.1s',
+        transition: 'transform 0.05s',
+        cursor: 'pointer',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'translate(-2px, -2px)';
+        e.currentTarget.style.boxShadow = `8px 8px 0 0 ${color}60`;
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = 'translate(0, 0)';
+        e.currentTarget.style.boxShadow = `6px 6px 0 0 ${color}60`;
+      }}
+      onMouseDown={e => {
+        e.currentTarget.style.transform = 'translate(2px, 2px)';
+        e.currentTarget.style.boxShadow = `2px 2px 0 0 ${color}60`;
+      }}
+      onMouseUp={e => {
+        e.currentTarget.style.transform = 'translate(-2px, -2px)';
+        e.currentTarget.style.boxShadow = `8px 8px 0 0 ${color}60`;
       }}
     >
       {isAd && (

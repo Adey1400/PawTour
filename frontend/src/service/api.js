@@ -3,7 +3,7 @@ import axios from "axios";
 // ── 1. Axios instance ────────────────────────────────────────────────────────
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "https://lauditorily-propublicity-lajuana.ngrok-free.dev",
   headers: {
     "Content-Type": "application/json",
   },

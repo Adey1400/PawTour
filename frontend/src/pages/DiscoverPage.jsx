@@ -3,8 +3,7 @@ import ItineraryPanel from '../components/ItineraryPanel';
 
 export default function DiscoverPage() {
   return (
-   
-    <div className="pt-8 min-h-screen">
+    <div style={{ paddingTop: '32px', minHeight: '100vh' }}>
       <DiscoveryPanel />
       <ItineraryPanel />
     </div>

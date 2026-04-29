@@ -69,13 +69,13 @@ export default function PixelMap({ items, centerLat = 22.5726, centerLng = 88.36
       <div style={{
         position: 'absolute',
         top: 0, left: 0, right: 0,
-        background: 'linear-gradient(90deg, var(--pixel-cyan), var(--pixel-lime))',
+        background: 'var(--pixel-cyan)',
         padding: '8px 12px',
         zIndex: 1000,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.5)'
+        boxShadow: '0 4px 0 0 rgba(0,0,0,0.5)'
       }}>
         <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '11px', color: 'var(--pixel-black)', fontWeight: 'bold' }}>
           🗺️ BUDDY'S LOCATION RADAR

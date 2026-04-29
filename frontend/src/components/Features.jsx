@@ -83,11 +83,11 @@ export default function Features() {
                 padding: 32,
                 position: 'relative',
                 cursor: 'pointer',
-                transition: 'transform 0.1s',
+                transition: 'transform 0.05s',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translate(-4px, -4px)';
-                e.currentTarget.style.boxShadow = `12px 12px 0 0 ${feature.shadow}`;
+                e.currentTarget.style.transform = 'translate(-2px, -2px)';
+                e.currentTarget.style.boxShadow = `10px 10px 0 0 ${feature.shadow}`;
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.transform = 'translate(0, 0)';

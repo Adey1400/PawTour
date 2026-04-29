@@ -31,14 +31,14 @@ function CompanionCard({ companion }) {
         padding: 0,
         width: 280,
         cursor: 'pointer',
-        transition: 'transform 0.1s',
+        transition: 'transform 0.05s',
         position: 'relative',
         display: 'flex',          // Added for height alignment
         flexDirection: 'column',   // Added for height alignment
       }}
       onMouseEnter={e => {
-        e.currentTarget.style.transform = 'translate(-4px, -4px)';
-        e.currentTarget.style.boxShadow = `14px 14px 0 0 ${companion.shadow}`;
+        e.currentTarget.style.transform = 'translate(-2px, -2px)';
+        e.currentTarget.style.boxShadow = `12px 12px 0 0 ${companion.shadow}`;
       }}
       onMouseLeave={e => {
         e.currentTarget.style.transform = 'translate(0, 0)';
@@ -117,7 +117,6 @@ function CompanionCard({ companion }) {
           padding: '12px',
           background: 'rgba(0, 255, 245, 0.1)',
           border: `2px solid ${companion.color}40`,
-          borderRadius: 2,
         }}>
           {companion.tip}
         </p>

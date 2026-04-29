@@ -84,7 +84,6 @@ export default function ItineraryPanel() {
                       position: 'absolute', left: -26, top: 16, width: 20, height: 20,
                       background: isSponsor ? 'var(--pixel-yellow)' : 'var(--pixel-navy)',
                       border: `4px solid ${isSponsor ? 'var(--pixel-white)' : 'var(--pixel-cyan)'}`,
-                      borderRadius: isSponsor ? '0%' : '50%', // Sponsors get square pixel blocks, normal gets circles
                       zIndex: 2,
                       display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }}>

@@ -5,43 +5,32 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
 
-/**
- * CORS Configuration for allowing cross-origin requests from the React frontend
- * to the Spring Boot backend.
- * 
- * Enables requests from localhost:5173 (Vite dev server) and localhost:3000
- */
 @Configuration
 public class CorsConfig {
 
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
-    
-    // Explicitly allow only the specified origins (not wildcard)
-    config.addAllowedOrigin("http://localhost:5173");
-    config.addAllowedOrigin("http://localhost:3000");
-    config.addAllowedOrigin("http://127.0.0.1:5173");
-    config.addAllowedOrigin("http://127.0.0.1:3000");
-    
-    // Allow all HTTP methods
-    config.addAllowedMethod("*");
-    
-    // Allow common headers
-    config.addAllowedHeader("Content-Type");
-    config.addAllowedHeader("Authorization");
-    config.addAllowedHeader("Accept");
-    config.addAllowedHeader("Origin");
-    
-    // Cache preflight response for 1 hour
+
+    // Use OriginPattern instead of specific Origins to avoid conflicts
+    config.setAllowedOriginPatterns(Arrays.asList("*"));
+
+    // Allow all standard methods
+    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+
+    // Allow all headers (Crucial for Axios/Fetch)
+    config.setAllowedHeaders(Arrays.asList("*"));
+
+    // Allow credentials if you eventually add JWT/Cookies
+    config.setAllowCredentials(true);
+
     config.setMaxAge(3600L);
-    
-    // Don't need credentials for this API
-    config.setAllowCredentials(false);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/api/**", config);
+    // Ensure this matches your API base path
+    source.registerCorsConfiguration("/**", config);
     return source;
   }
 }
